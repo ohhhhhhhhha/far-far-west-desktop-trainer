@@ -71,10 +71,6 @@
       "path": "GameRoot/FarFarWest/Binaries/Win64/ue4ss/Mods/FFWTrainer/enabled.txt"
     },
     {
-      "source": "FFWTools/src/FFWTrainerGui/build/FFWTrainer.exe",
-      "path": "GameRoot/FFWTrainer/FFWTrainer.exe"
-    },
-    {
       "source": "README.md",
       "path": "README.md"
     },
@@ -113,13 +109,30 @@
     {
       "source": "release.json",
       "path": "release.json"
+    },
+    {
+      "source": "FFWTools/src/FFWTrainer/Scripts/TrainerUI.lua",
+      "path": "GameRoot/FarFarWest/Binaries/Win64/ue4ss/Mods/FFWTrainer/Scripts/TrainerUI.lua"
+    },
+    {
+      "source": "FFWTools/src/FFWTrainer/Scripts/TrainerView.lua",
+      "path": "GameRoot/FarFarWest/Binaries/Win64/ue4ss/Mods/FFWTrainer/Scripts/TrainerView.lua"
+    },
+    {
+      "source": "FFWTools/src/FFWTrainer/Scripts/CanvasView.lua",
+      "path": "GameRoot/FarFarWest/Binaries/Win64/ue4ss/Mods/FFWTrainer/Scripts/CanvasView.lua"
+    },
+    {
+      "source": "FFWTools/src/FFWTrainer/Scripts/MousePanel.lua",
+      "path": "GameRoot/FarFarWest/Binaries/Win64/ue4ss/Mods/FFWTrainer/Scripts/MousePanel.lua"
     }
   ],
   "directories": [
     "GameRoot/FarFarWest/Binaries/Win64/ue4ss/Mods/FFWTrainer/Data"
   ],
   "obsoleteFiles": [
-    "GameRoot/FarFarWest/Binaries/Win64/ue4ss/Mods/FFWTrainer/Scripts/ProgressPanel.lua"
+    "GameRoot/FarFarWest/Binaries/Win64/ue4ss/Mods/FFWTrainer/Scripts/ProgressPanel.lua",
+    "GameRoot/FFWTrainer/FFWTrainer.exe"
   ],
   "sourceFiles": [
     ".github/workflows/release.yml",
@@ -127,8 +140,8 @@
     "CHANGELOG.md",
     "CONTRIBUTING.md",
     "DEVELOPMENT.md",
-    "FFWTools/build-gui.ps1",
     "FFWTools/src/FFWTrainer/Scripts/Bridge.lua",
+    "FFWTools/src/FFWTrainer/Scripts/CanvasView.lua",
     "FFWTools/src/FFWTrainer/Scripts/CardText.lua",
     "FFWTools/src/FFWTrainer/Scripts/Cards.lua",
     "FFWTools/src/FFWTrainer/Scripts/Effects.lua",
@@ -137,23 +150,19 @@
     "FFWTools/src/FFWTrainer/Scripts/Inventory.lua",
     "FFWTools/src/FFWTrainer/Scripts/Json.lua",
     "FFWTools/src/FFWTrainer/Scripts/Locale.lua",
+    "FFWTools/src/FFWTrainer/Scripts/MousePanel.lua",
     "FFWTools/src/FFWTrainer/Scripts/Panel.lua",
     "FFWTools/src/FFWTrainer/Scripts/Progress.lua",
     "FFWTools/src/FFWTrainer/Scripts/Spawner.lua",
+    "FFWTools/src/FFWTrainer/Scripts/TrainerUI.lua",
+    "FFWTools/src/FFWTrainer/Scripts/TrainerView.lua",
     "FFWTools/src/FFWTrainer/Scripts/UpgradeLimit.lua",
     "FFWTools/src/FFWTrainer/Scripts/UpgradeRules.lua",
     "FFWTools/src/FFWTrainer/Scripts/WeaponRules.lua",
     "FFWTools/src/FFWTrainer/Scripts/main.lua",
     "FFWTools/src/FFWTrainer/enabled.txt",
-    "FFWTools/src/FFWTrainerGui/AppFiles.cs",
-    "FFWTools/src/FFWTrainerGui/Client.cs",
-    "FFWTools/src/FFWTrainerGui/MainForm.cs",
-    "FFWTools/src/FFWTrainerGui/Program.cs",
-    "FFWTools/src/FFWTrainerGui/Protocol.cs",
-    "FFWTools/src/FFWTrainerGui/app.manifest",
-    "FFWTools/src/FFWTrainerGui/catalog.json",
     "FFWTools/tests/bilingual_catalog_test.lua",
-    "FFWTools/tests/generate_gui_catalog.lua",
+    "FFWTools/tests/common_mouse_test.lua",
     "FFWTools/tests/joker_bilingual_test.lua",
     "FFWTools/tests/joker_compact_description_test.lua",
     "FFWTools/tests/joker_context_preview_test.lua",
@@ -176,9 +185,10 @@
     "FFWTools/tests/joker_upgrade_completion_test.lua",
     "FFWTools/tests/joker_weapon_completion_test.lua",
     "FFWTools/tests/locale_core_test.lua",
+    "FFWTools/tests/overlay_mouse_engine.lua",
+    "FFWTools/tests/testlib.lua",
     "FFWTools/tests/trainer_bridge_test.lua",
-    "FFWTools/tests/trainer_gui_preview.cs",
-    "FFWTools/tests/trainer_gui_test.cs",
+    "FFWTools/tests/trainer_ingame_test.lua",
     "FFWTools/tests/trainer_isolation_test.lua",
     "FFWTools/tests/trainer_progress_test.lua",
     "FFWTools/tests/trainer_upgrade_limit_test.lua",

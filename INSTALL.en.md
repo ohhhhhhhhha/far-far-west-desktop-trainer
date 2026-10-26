@@ -1,28 +1,23 @@
-# Install, update and remove — Desktop Trainer
+# Installation, update and removal
 
-Requires Windows x64 and a working UE4SS installation for Far Far West. Tested baseline: game 0.3.0.7 / UE4SS build 1181. The GUI requires .NET Framework 4.x. UE4SS is not bundled.
+Requires Windows x64, Far Far West and a working UE4SS installation. Baseline: game 0.3.0.7 / UE4SS 1181. Framework binaries are not included.
 
 ## Install
 
-1. Exit the game. In Steam, choose Manage → Browse local files.
-2. Extract the runtime ZIP outside that directory.
-3. Copy the contents of GameRoot into the game directory, merging folders.
-4. Double-click FFWTrainer/FFWTrainer.exe in the game folder.
+Close the game. Extract the release ZIP, then copy everything inside GameRoot into the game root opened by Steam → Manage → Browse local files. Merge folders; do not copy the GameRoot folder itself. The entry point becomes FarFarWest/Binaries/Win64/ue4ss/Mods/FFWTrainer/Scripts/main.lua. The included enabled.txt activates this independent mod. Start the game and press F2, or F4 for Joker search. No installer, shell commands or desktop app are required.
 
-The Lua entry must be at FarFarWest/Binaries/Win64/ue4ss/Mods/FFWTrainer/Scripts/main.lua. The included FarFarWest/Binaries/Win64/ue4ss/Mods/FFWTrainer/enabled.txt enables this component. The GUI goes at FFWTrainer/FFWTrainer.exe, and the package creates an empty Data directory inside the mod. No command, installation script or replacement mods.txt is needed.
+## Update from the desktop version
 
-For a custom UE4SS working directory, copy the FFWTrainer mod folder to its actual Mods directory. The desktop GUI expects the standard ue4ss directory layout above.
+1. Close the game and the old desktop trainer.
+2. Copy the old FFWTrainer mod folder outside Mods as a backup.
+3. Replace only its Scripts folder with the new package; keep Data, including settings.json.
+4. Move the old game-root FFWTrainer/FFWTrainer.exe to a backup folder or remove it. The new version ignores desktop command files.
+5. Copy the remaining GameRoot files, restart the game and use F2/F4.
 
-## Update
+The package does not include personal settings, saves or statistics. An empty Data directory does not replace existing files when merging folders.
 
-Close the game and GUI. Back up the old FFWTrainer folder outside Mods. Remove only its Scripts subfolder, then copy the new GameRoot contents. Preserve Data and other custom files. This clears removed scripts from earlier versions without replacing other mods or global settings.
+## Disable, remove or restore
 
-## Disable or remove
+Close the game and remove the component’s enabled.txt. If mods.txt also contains FFWTrainer, set that entry to 0. The enabled.txt marker otherwise overrides that flag. Remove only the mod’s Scripts folder to uninstall; keep Data if you want its settings. Restore the backed-up files and activation marker to revert. Removing the mod does not reverse progression already saved by the game.
 
-Move enabled.txt out of the FFWTrainer folder. If mods.txt already contains a FFWTrainer entry, change that entry to 0 as well: enabled.txt bypasses mods.txt. To remove the component, remove its Scripts subfolder after disabling it. The GUI file may also be removed. Keep Data if you want to retain the budget setting; uninstalling does not undo progression saved by the game.
-
-## References
-
-- [UE4SS installation](https://docs.ue4ss.com/dev/installation-guide.html)
-- [Lua mod entry layout](https://docs.ue4ss.com/guides/creating-a-lua-mod.html)
-- [Activation marker and load ordering](https://docs.ue4ss.com/guides/installing-a-c%2B%2B-mod.html)
+[UE4SS layout](https://docs.ue4ss.com/guides/creating-a-lua-mod.html) · [Activation rules](https://docs.ue4ss.com/guides/installing-a-c%2B%2B-mod.html)

@@ -1,17 +1,13 @@
 # Development / 开发说明
 
-This is the standalone FFWTrainer repository. Runtime Lua files are stored in FFWTools/src/FFWTrainer/Scripts, including all calculation and language dependencies. The GUI is under FFWTools/src/FFWTrainerGui; the developer-only FFWTools/build-gui.ps1 builds its EXE, tests or preview.
+All runtime Lua modules and required dependencies are under FFWTools/src/FFWTrainer/Scripts. TrainerUI owns selection/search/actions, TrainerView builds the layout, and CanvasView renders native widgets through MousePanel. main.lua owns hotkeys and game-thread scheduling. Progress, Spawner and UpgradeLimit retain the existing gameplay boundaries. Bridge is retained for its settings file helpers; its desktop protocol is not polled by main.lua.
 
-The root package.mjs exports buildRelease({ root, outputDirectory, JSZip }). It uses package-manifest.json as the explicit file allowlist and release.json for the version. Node.js and JSZip 3.10.1 are development dependencies declared in package.json. The API creates one runtime ZIP, one source ZIP, SHA256SUMS.txt and release-manifest.json. It neither launches the game nor uploads files. Build the GUI first: the source archive intentionally excludes FFWTools/src/FFWTrainerGui/build/FFWTrainer.exe.
+The root package.mjs exports buildRelease({ root, outputDirectory, JSZip }). package-manifest.json is the explicit allowlist; release.json provides the version. Node.js and JSZip 3.10.1 are development dependencies. The API produces runtime/source ZIPs and SHA-256 manifests without launching a process or the game. No GUI compilation is needed.
 
-Existing Lua checks are under FFWTools/tests. Their paths were adapted to this standalone layout; the runtime Lua and GUI payload remain unchanged. Package verification checks module/file closure, relative links, privacy, CRC/SHA-256 and equality with the accepted runtime. Run Lua checks with the repository as working directory in a Lua-capable IDE or runner when changing functionality. Player installation needs no terminal or script.
+Lua checks are under FFWTools/tests, adapted to this standalone layout. Use a Lua 5.4 capable IDE/runner with the repository as working directory. The new interface was also exercised against a synthetic Unreal boundary, including mouse ownership, persistent editing input, bilingual search and 720p geometry. Live game font/IME behavior remains a separate acceptance check. Never treat offline results as live-game validation.
 
-Follow [UE4SS’s Lua layout](https://docs.ue4ss.com/guides/creating-a-lua-mod.html) and [activation behavior](https://docs.ue4ss.com/guides/installing-a-c%2B%2B-mod.html). UE5LuaModKit is a [community reference](https://github.com/qycnet/UE5LuaModKit) for organization; its generic mod.lua/RegisterMod examples are not the UE4SS API contract. Validate game calls against the supported version.
+The existing GitHub workflow reads prepared release manifests on publish/* branches and uses the official JavaScript API. It verifies each asset’s size and SHA-256 before publishing. No shell commands are used; upload payloads stay off main and outside source archives.
 
-本仓库为独立组件，所需共享文件已直接纳入自身 Scripts 目录。package.mjs 通过明确文件清单生成本组件运行包、源码包与校验文件，不启动游戏、不上传文件。源码包不含编译后的 EXE，制作完整运行包前需先构建 GUI；构建脚本只供开发者使用。既有测试路径已适配此布局，运行代码保持不变；玩家安装无需命令行。功能改动需运行相关 Lua/C# 检查，原生行为另行在游戏内验证。
+本仓库所有运行依赖都位于自身 Scripts 目录。控制器、布局、画布和鼠标输入分层，保存与刷卡入口保持明确操作边界。打包 API 按清单生成运行/源码 ZIP 与校验文件，不需要 GUI 编译，也不启动游戏或命令行。测试在独立仓库目录下执行，界面原生表现另行实测；不要纳入玩家 Data、存档、日志或个人路径。
 
-## Release publishing / 发布附件
-
-The GitHub workflow publishes explicitly prepared artifacts from publish/* branches through the official GitHub JavaScript API. It verifies SHA-256 and size before publishing the release. Its token is limited to repository contents; it uses no shell commands and does not build or run the game. Publication payload files live only on the upload branch, not on main or in the source archive.
-
-GitHub 工作流从 publish/* 分支读取已准备的附件，通过官方 JavaScript API 校验并发布 Release。只使用仓库内容权限，不运行批处理、命令行或游戏；上传载荷不进入 main 和源码包。
+Follow [UE4SS’s Lua layout](https://docs.ue4ss.com/guides/creating-a-lua-mod.html). [UE5LuaModKit](https://github.com/qycnet/UE5LuaModKit) is an organizational reference, not the UE4SS API contract.

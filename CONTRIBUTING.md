@@ -1,6 +1,6 @@
 # Contributing / 参与维护
 
-This repository contains only FFWTrainer. Keep related changes together and unrelated changes in separate commits. Adopt [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) as a project convention, not a GitHub requirement: type(scope): description. Use scopes trainer, gui, docs or release, and types feat, fix, docs, refactor, build or test. Prefer short descriptive titles and explain the reason and validation when useful.
+This repository contains only FFWTrainer. Keep related changes together and unrelated changes in separate commits. Adopt [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) as a project convention, not a GitHub requirement: type(scope): description. Use scopes trainer, ui, docs or release, and types feat, fix, docs, refactor, build or test. Prefer short descriptive titles and explain the reason and validation when useful.
 
 README files should state the purpose, features, prerequisites, installation, usage, support and license. Keep English and Chinese consistent. Use relative links for repository files and releases for downloads. Put longer developer details in DEVELOPMENT.md. Follow the [GitHub README guide](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes) and [commit-history guidance](https://docs.github.com/en/desktop/managing-commits/options-for-managing-commits-in-github-desktop).
 
