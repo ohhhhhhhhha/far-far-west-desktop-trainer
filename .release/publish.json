@@ -1,0 +1,36 @@
+{
+  "tag": "v0.4.0-beta.1",
+  "targetCommit": "09c06a0abe86500f3fd433d47eb8d4ebba85b8b5",
+  "title": "In-game Trainer 0.4.0-beta.1 / 游戏内修改器",
+  "body": "The trainer now opens inside the game with F2; F4 opens bilingual Joker search.\n\n- Mouse category selection, paging, value input and scrollable details, styled with the game font and brass/dark colors.\n- F1 applies progression values in the saloon; F3 spawns the selected Joker during a mission.\n- Existing resource, character/weapon/magic level saving and original-menu budget unlocking are retained.\n- The new package contains no desktop executable or .NET dependency. Keep Data/settings.json when updating; the old FFWTrainer.exe is no longer used.\n\nDownload **FFWTrainer-0.4.0-beta.1.zip** and copy the contents of GameRoot into the game directory. No terminal or installer script is needed. The source ZIP and SHA-256 checksums are separate assets.\n\n修改器已迁回游戏内：F2 打开工具箱，F4 搜索奇术卡；支持鼠标选择、翻页、输入与滚动。F1 应用数值，F3 生成卡牌。新版移除桌面 GUI，更新保留 Data/settings.json；旧 FFWTrainer.exe 不再使用。安装时复制运行 ZIP 中 GameRoot 的内容即可。\n\nValidation: all 29 standalone Lua test files passed; privacy, README links, archive CRC and payload hashes were checked. Existing saving and budget logic were previously confirmed in-game. The new panel’s native font, IME and interaction acceptance is still pending, so this is a prerelease.\n\n基线：Far Far West 0.3.0.7 / UE4SS build 1181。新面板已通过离线检查，实际游戏中的字体、输入法和操作仍待验收。附件不含个人数据、存档或日志。",
+  "assets": [
+    {
+      "name": "FFWTrainer-0.4.0-beta.1.zip",
+      "bytes": 159048,
+      "sha256": "df5dd0ad6c2a78afa748611d70d4d7edad86ae32c811a7c737f064663d65a2db",
+      "contentType": "application/zip",
+      "blob": "17ea4bc1c2cea526b74aba6df2e4276753ebeb82"
+    },
+    {
+      "name": "FFWTrainer-source-0.4.0-beta.1.zip",
+      "bytes": 224021,
+      "sha256": "944a8d2838084910e7d281a83b0e5b8593f2850e31ed5714dc4af148049af4ae",
+      "contentType": "application/zip",
+      "blob": "e2bbcfecc0e6c7009586d79ec29743f1c1446275"
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "bytes": 195,
+      "sha256": "8c06ee65ac5f61b5e9b377831c51453f55e70ccb5ad7a7d383dfb3630f82fd4d",
+      "contentType": "text/plain",
+      "blob": "c73fd016721b8965244a2be7ab0bb026851a937a"
+    },
+    {
+      "name": "release-manifest.json",
+      "bytes": 516,
+      "sha256": "2a585a9178e566ca6a63d9b98d715462587d0832519c4813450a30d84f7f7223",
+      "contentType": "application/json",
+      "blob": "ec56937c1a9ef8cafbbabbaf471504796f60112e"
+    }
+  ]
+}
