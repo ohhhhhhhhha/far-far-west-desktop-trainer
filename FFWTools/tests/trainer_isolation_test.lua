@@ -24,13 +24,13 @@ for i=1,2 do
     end
     local mod=assert(loadfile('FFWTools/src/FFWTrainer/Scripts/main.lua','t',env))()
     mod.update()
-    eq(next(callbacks),nil,'no shared key registrations')
+    eq(next(callbacks),nil,'no keys registered when the host has no key API')
     eq(next(files),nil,'offline polling is read only')
     eq(env.FFWTrainer,mod)
     instances[i]=mod
 end
 local a,b=instances[1],instances[2]
-eq(a~=b,true);eq(a.bridge~=b.bridge,true);eq(a.bridge.session~=b.bridge.session,true)
+eq(a~=b,true);eq(a.ui~=b.ui,true);eq(a.renderer~=b.renderer,true)
 eq(a.Locale~=b.Locale,true,'private language state')
 a.Locale.setCulture('en-US');eq(a.Locale.language(),'en');eq(b.Locale.language(),'zh')
 eq(a.Progress~=b.Progress,true,'private progression module')

@@ -41,8 +41,8 @@ package.preload.UEHelpers=function() return {GetPlayerController=function() retu
 local realLoad=loadfile
 local files,applied,limitCalls={},0,0
 local progressBackend={
-    entries=function() return {{id='gold',category='resource',nameZh='金币',nameEn='Gold',min=0,max=9999999},
-        {id='itemIceLevel',category='magic',nameZh='冰霜魔法等级',nameEn='Frost magic level',min=1,max=100}} end,
+    entries=function() return {{id='gold',type='resource',category='resource',nameZh='金币',nameEn='Gold',min=0,max=9999999},
+        {id='itemIceLevel',type='level',category='magic',nameZh='冰霜魔法等级',nameEn='Frost magic level',min=1,max=100}} end,
     read=function() return {canApply=true,values={gold={value=5,raw=5}},messageZh='就绪',messageEn='Ready'} end,
     apply=function(id,value) applied=applied+1;eq(id,'gold');eq(value,'6');return true,'已请求保存',{messageEn='Save requested.'} end}
 local limit={enabled=false}
@@ -51,12 +51,28 @@ function limit:stop() self.enabled=false end
 function limit:status() return {enabled=self.enabled,active=self.enabled,messageZh='额度开关',messageEn='Budget switch'} end
 function limit:setEnabled(value) limitCalls=limitCalls+1;self.enabled=value;return true,'完成','Done' end
 loadfile=function(path,mode,env)
+    if path:match('/CanvasView%.lua$') then return function() return {new=function()
+        local r={inputs={},values={},attached=false}
+        function r:render(m)
+            self.attached=m~=nil;self.model=m
+            if m then
+                for _,id in ipairs({'target','query'}) do
+                    local key=id=='target' and m.inputKey or m.queryKey
+                    if not self.inputs[id] or self.inputs[id].resetKey~=key then
+                        self.values[id]=id=='target' and m.inputValue or m.query;self.inputs[id]={resetKey=key}
+                    end
+                end
+            end
+        end
+        function r:input(id) return self.values[id] end
+        function r:hide() self.attached=false end
+        return r
+    end} end end
     if path:match('/Progress%.lua$') then return function() return progressBackend end end
     if path:match('/UpgradeLimit%.lua$') then return function() return {new=function() return limit end} end end
     local chunk,err=realLoad(path,mode,env)
     if chunk and path:match('/Bridge%.lua$') then return function()
-        local b=chunk()
-        b.readFile=function(p) return files[p:match('([^/]+)$')] end
+        local b=chunk();b.readFile=function(p) return files[p:match('([^/]+)$')] end
         b.writeFile=function(p,text) files[p:match('([^/]+)$')]=text;return true end
         return b
     end end
@@ -65,44 +81,31 @@ end
 StaticFindObject=function() return nil end
 local mod=dofile(arg[1] or 'FFWTools/src/FFWTrainer/Scripts/main.lua')
 local Json=dofile('FFWTools/src/FFWTrainer/Scripts/Json.lua')
-eq(next(keys),nil,'headless Trainer owns no game hotkeys')
-eq(controller.bShowMouseCursor,false,'does not capture game input')
-eq(applied,0);eq(#generated,0);eq(limitCalls,0,'startup does not enable or change progress')
-mod.update();eq(files['state.json'],nil,'closed GUI causes no state publication')
-files['client.json']=Json.encode{protocol=1,clientId='test',updatedAt=now,selectedCardId='jokerLightWeight'}
-mod.update()
-local function state() return Json.decode(files['state.json']) end
-eq(state().canSpawn,true);eq(state().entries[2].category,'magic')
-eq(state().entries[2].available,false);eq(state().entries[2].value,nil,'unknown magic is not zero')
-eq(state().cardPreview.textZh:find('1.15 → 1.1',1,true)~=nil,true,'real pickup prediction')
-eq(state().cardPreview.textEn:find('Gravity',1,true)~=nil,true,'bilingual prediction')
-local function send(id,action,payload)
-    files['command.json']=Json.encode{protocol=1,clientId='test',session=mod.bridge.session,
-        requestId=id,createdAt=now,action=action,payload=payload}
-    mod.update()
-end
-send('spawn-1','spawn',{id='jokerLightWeight'});eq(#generated,1);eq(generated[1].id,'jokerLightWeight');eq(generated[1].dropped,true)
-eq(state().lastResult.messageEn:find('LIGHTWEIGHT',1,true)~=nil,true)
-mod.update();eq(#generated,1,'polling acknowledged spawn does not repeat')
-send('spawn-2','spawn',{id='jokerFightOrFlight'});eq(#generated,1,'native two-second throttle')
-now=now+3;files['client.json']=Json.encode{protocol=1,clientId='test',updatedAt=now}
-send('spawn-3','spawn',{id='jokerFightOrFlight'});eq(#generated,2)
-send('save','setProgress',{id='gold',value='6'});eq(applied,1);mod.update();eq(applied,1)
-send('toggle','setUnlimited',{enabled=true});eq(limit.enabled,true);eq(limitCalls,1)
+eq(type(keys[Key.F2]),'function');eq(type(keys[Key.F4]),'function')
+eq(controller.bShowMouseCursor,false,'closed trainer leaves input alone')
+eq(applied,0);eq(#generated,0);eq(limitCalls,0)
+files['client.json']=Json.encode{protocol=1,clientId='legacy',updatedAt=now}
+files['command.json']=Json.encode{action='spawn',payload={id='jokerLightWeight'}}
+mod.update();eq(files['state.json'],nil);eq(#generated,0,'desktop requests are inert')
+keys[Key.F4]();eq(mod.visible,true)
+mod.renderer.values.query='LightWeight';mod.update()
+eq(mod.ui:model().selected.id,'jokerLightWeight')
+eq(mod.ui:model().detail:find('1.15 → 1.1',1,true)~=nil,true,'real pickup prediction')
+mod.Locale.setCulture('en-US');eq(mod.ui:model().detail:find('Gravity',1,true)~=nil,true);mod.Locale.setCulture('zh-CN')
+keys[Key.F3]();eq(#generated,1);eq(generated[1].id,'jokerLightWeight');eq(generated[1].dropped,true)
+mod.update();eq(#generated,1,'refresh does not repeat spawn')
+keys[Key.F3]();eq(#generated,1,'two-second throttle retained')
+now=now+3;keys[Key.F3]();eq(#generated,2)
+mod.action('section','resources');mod.renderer.values.target='6';keys[Key.F1]();eq(applied,1)
+mod.update();eq(applied,1,'refresh does not save')
+mod.action('section','settings');mod.action('unlimited');eq(limit.enabled,true);eq(limitCalls,1)
 eq(Json.decode(files['settings.json']).unlimited,true)
-send('bad','setProgress',{id='gold',value=6});eq(applied,1,'invalid payload cannot reach native save')
-send('replay','spawn',{id='jokerUpgradeDamage'});eq(#generated,2,'cannot spawn permanent upgrades')
+keys[Key.F7]();eq(mod.visible,false);keys[Key.F1]();keys[Key.F3]();eq(applied,1);eq(#generated,2)
+keys[Key.F4]();mod.renderer.values.query='UpgradeDamage';mod.update();keys[Key.F3]();eq(#generated,2)
 pawn.GetFullName=function() return 'BP_Player_Lobby_C /Game/Levels/L_Lobby.L_Lobby:PersistentLevel.Local' end
-now=now+3;files['client.json']=Json.encode{protocol=1,clientId='test',updatedAt=now}
-send('lobby','spawn',{id='jokerLightWeight'});eq(state().canSpawn,false);eq(#generated,2)
-eq(state().lastResult.success,false)
-mod.stop();eq(mod.enabled,false);eq(limit.enabled,false)
-eq(mod.errors,0)
-files['client.json']=nil;files['command.json']=nil
-local reloaded=dofile(arg[1] or 'FFWTools/src/FFWTrainer/Scripts/main.lua')
-eq(limitCalls,1,'persisted toggle does not edit widgets from the loading thread')
-reloaded.update();eq(limitCalls,2);eq(limit.enabled,true,'persisted toggle restores on game-thread tick')
-eq(applied,1,'restoring a setting never saves progression')
-reloaded.stop()
-loadfile=realLoad
-print('joker_spawner_runtime_test: '..checks..' checks passed (desktop bridge)')
+now=now+3;mod.renderer.values.query='LightWeight';mod.update();keys[Key.F3]();eq(#generated,2);eq(mod.ui:model().canSpawn,false)
+mod.stop();eq(mod.enabled,false);eq(limit.enabled,false);eq(mod.errors,0)
+keys={};local reloaded=dofile(arg[1] or 'FFWTools/src/FFWTrainer/Scripts/main.lua')
+eq(limitCalls,1,'settings wait for the game thread');reloaded.update();eq(limitCalls,2);eq(limit.enabled,true)
+eq(applied,1);reloaded.stop();loadfile=realLoad
+print('joker_spawner_runtime_test: '..checks..' checks passed (in-game trainer)')

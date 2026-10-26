@@ -1,98 +1,88 @@
--- Headless UE4SS connection for the external FFWTrainer.exe. No trainer hotkeys.
+-- Game-native trainer. No desktop client, command polling or background progress writes.
 local directory=debug.getinfo(1,'S').source:sub(2):gsub('\\','/'):match('^(.*)/')
 assert(directory,'FFWTrainer needs a file-backed entry point')
 local shared={Cards=true,Effects=true,Inventory=true,Panel=true,HeroRules=true,WeaponRules=true,UpgradeRules=true}
-local allowed={Spawner=true,Progress=true,Bridge=true,UpgradeLimit=true,Json=true,Locale=true}
-local modules,environment={},nil
-local globalRequire=require
-environment=setmetatable({require=function(name)
+local allowed={Spawner=true,Progress=true,Bridge=true,UpgradeLimit=true,Json=true,Locale=true,TrainerUI=true,TrainerView=true,CanvasView=true,MousePanel=true}
+local modules,environment={},nil;local globalRequire=require
+ environment=setmetatable({require=function(name)
     if not shared[name] and not allowed[name] then return globalRequire(name) end
     if not modules[name] then
         local chunk,err=loadfile(directory..'/'..name..'.lua','t',environment)
         if not chunk and shared[name] then chunk,err=loadfile(directory..'/../../FFWJokerInfo/Scripts/'..name..'.lua','t',environment) end
-        if not chunk and name=='Json' then chunk,err=loadfile(directory..'/../../Common/Json.lua','t',environment) end
+        if not chunk and (name=='Json' or name=='CanvasView' or name=='MousePanel') then chunk,err=loadfile(directory..'/../../Common/'..name..'.lua','t',environment) end
         modules[name]=assert(chunk,err)()
     end
     return modules[name]
 end},{__index=_G})
-local I,P=environment.require('Inventory'),environment.require('Panel')
-local Spawner,Progress=environment.require('Spawner'),environment.require('Progress')
-local Bridge,UpgradeLimit,L=environment.require('Bridge'),environment.require('UpgradeLimit'),environment.require('Locale')
-local S={enabled=true,errors=0,visible=false,Progress=Progress,Locale=L}
-_G.FFWTrainer=S
-local function log(message) print('[FFWTrainer] '..message..'\n') end
+local function module(name) return environment.require(name) end
+local Progress,Spawner,Inventory=module('Progress'),module('Spawner'),module('Inventory')
+local L,Bridge,Json=module('Locale'),module('Bridge'),module('Json')
+local S={enabled=true,visible=false,errors=0,Progress=Progress,Locale=L};_G.FFWTrainer=S
+local function log(m) print('[FFWTrainer] '..tostring(m)..'\n') end
 local function protected(fn)
     local ok,err=pcall(fn)
-    if not ok then
-        S.errors=S.errors+1
-        if S.lastError~=tostring(err) then S.lastError=tostring(err);log('ERROR '..S.lastError) end
-    end
+    if not ok then S.errors=S.errors+1;if S.lastError~=tostring(err) then S.lastError=tostring(err);log(err) end end
     return ok,err
 end
-local function inLanguage(language,fn)
-    local previous=L.language();L.setCulture(language)
-    local ok,result=pcall(fn);L.setCulture(previous)
-    if not ok then error(result) end
-    return result
-end
-S.limit=UpgradeLimit.new()
-local function snapshot(client)
-    L.refresh()
-    local progress=Progress.read();local rows={}
-    for _,entry in ipairs(Progress.entries()) do
-        local value=progress.values[entry.id]
-        rows[#rows+1]={id=entry.id,category=entry.category or entry.type,nameZh=entry.nameZh,nameEn=entry.nameEn,
-            min=entry.min,max=entry.max,value=value and value.value,raw=value and value.raw,available=value~=nil}
+S.limit=module('UpgradeLimit').new()
+local settingsPath=directory..'/../Data/settings.json'
+local restoreUnlimited=false
+local saved=Bridge.readFile(settingsPath)
+if saved then local ok,value=pcall(Json.decode,saved);restoreUnlimited=ok and type(value)=='table' and value.unlimited==true end
+local function setUnlimited(enabled)
+    local previous=S.limit:status().enabled
+    local ok,zh,en=S.limit:setEnabled(enabled);if not ok then return ok,zh,en end
+    local written,err=Bridge.writeFile(settingsPath,Json.encode({unlimited=enabled}))
+    if not written then
+        S.limit:setEnabled(previous);log(err)
+        return false,'设置未保存，已恢复原状态。','Settings could not be saved; the previous state was restored.'
     end
-    local canSpawn=Spawner.canSpawn()
-    local state={language=L.language(),canApply=progress.canApply==true,canSpawn=canSpawn==true,
-        messageZh=progress.messageZh,messageEn=progress.messageEn,entries=rows,unlimited=S.limit:status()}
-    local card=client.selectedCardId and environment.require('Cards').get(client.selectedCardId)
-    if card then
-        local current=I.read()
-        local function description() return P.description(card.id,current,nil,'pickup',L.card(card.id,'description')) end
-        state.cardPreview={id=card.id,textZh=inLanguage('zh',description),textEn=inLanguage('en',description)}
-    end
-    return state
+    return true,zh,en
 end
-local function execute(action,payload)
-    if action=='setProgress' then
-        local ok,zh,details=Progress.apply(payload.id,payload.value)
-        log('APPLY '..payload.id..' success='..tostring(ok))
-        if not ok then log('APPLY FAILURE '..tostring(details and details.messageEn)..' '..tostring(details and details.error)) end
-        return ok,zh,details and details.messageEn
-    elseif action=='spawn' then
-        local ok,_,status=Spawner.spawn(payload.id)
-        log('SPAWN '..payload.id..' requested='..tostring(ok))
-        return ok,inLanguage('zh',function() return Spawner.messageText(status) end),inLanguage('en',function() return Spawner.messageText(status) end)
-    elseif action=='setUnlimited' then
-        local previous=S.limit:status().enabled
-        local ok,zh,en=S.limit:setEnabled(payload.enabled)
-        if not ok then return ok,zh,en end
-        local saved,err=S.bridge:writeJson('settings',{unlimited=payload.enabled})
-        if not saved then
-            S.limit:setEnabled(previous)
-            log('SETTINGS FAILURE '..tostring(err))
-            return false,'无法保存开关设置，已恢复原状态。','Could not save the setting. The previous state was restored.'
-        end
-        return true,zh,en
+S.ui=module('TrainerUI').new{read=Progress.read,inventory=Inventory.read,apply=Progress.apply,spawn=Spawner.spawn,
+    canSpawn=Spawner.canSpawn,getUnlimited=function() return S.limit:status() end,setUnlimited=setUnlimited}
+local function inputs()
+    if not S.ui.visible or not S.renderer.attached then return end
+    local query=S.renderer:input('query');if query and S.ui.section~='settings' then S.ui:setQuery(query) end
+    if S.ui.section~='jokers' and S.ui.section~='settings' then
+        local target=S.renderer:input('target')
+        local entry=S.renderer.inputs and S.renderer.inputs.target
+        if target and entry and entry.resetKey==S.ui.inputRevision then S.ui:setTarget(target) end
     end
 end
-S.bridge=Bridge.new{directory=directory..'/../Data',session=tostring(os.time())..'-'..tostring({}):gsub('table: ',''),
-    snapshot=snapshot,execute=execute}
-local settings=S.bridge:readJson('settings')
-local restoreUnlimited=settings and settings.unlimited==true
-local lastLimitTick=-math.huge
+local function render() S.visible=S.ui.visible;S.renderer:render(S.ui:model()) end
+function S.action(action,value)
+    if not S.enabled then return end
+    ExecuteInGameThread(function() protected(function() inputs();S.ui:action(action,value);render() end) end)
+end
+S.renderer=module('CanvasView').new{getController=function() return require('UEHelpers').GetPlayerController() end,
+    layout=module('TrainerView').layout,onAction=S.action,zOrder=9960}
+function S.toggle(section)
+    ExecuteInGameThread(function() protected(function() inputs();L.refresh();S.ui:toggle(section);render() end) end)
+end
+function S.hide()
+    if not S.visible then return end
+    ExecuteInGameThread(function() protected(function() S.ui.visible=false;render() end) end)
+end
+local lastTick=-math.huge
 function S.update()
     if not S.enabled then return end
-    -- Even persisted widget changes wait for the game-thread loop.
     if restoreUnlimited then restoreUnlimited=false;S.limit:setEnabled(true) end
+    inputs()
     local now=os.time()
-    if now~=lastLimitTick then S.limit:tick();lastLimitTick=now end
-    S.bridge:tick()
+    if now~=lastTick then S.limit:tick();L.refresh();S.ui:refresh();lastTick=now end
+    if S.visible then render() end
 end
-function S.hide() end -- Compatibility with the independent overlays' cross-hide calls.
-function S.stop() S.enabled=false;S.limit:stop() end
+function S.stop() S.enabled=false;S.ui.visible=false;S.visible=false;S.renderer:hide();S.limit:stop() end
+local function bind(key,fn) if Key and Key[key] then RegisterKeyBind(Key[key],fn) end end
+bind('F2',function() S.toggle() end)
+bind('F4',function() S.toggle('jokers') end)
+bind('F1',function() S.action('apply') end)
+bind('F3',function() S.action('spawn') end)
+for _,entry in ipairs({{'F5',-1},{'F6',1}}) do bind(entry[1],function()
+    if S.visible then ExecuteInGameThread(function() protected(function() inputs();S.ui:move(entry[2]);render() end) end) end
+end) end
+bind('F7',S.hide);bind('F8',S.hide)
 LoopInGameThreadWithDelay(250,function() if S.enabled then protected(S.update) end end)
-log('desktop connection loaded. Open FFWTrainer.exe; game trainer hotkeys are removed.')
+log('in-game trainer loaded: F2 toolkit, F4 joker search, F1 apply, F3 spawn. Desktop commands are disabled.')
 return S
