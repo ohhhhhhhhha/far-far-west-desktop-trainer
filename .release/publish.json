@@ -1,0 +1,36 @@
+{
+  "tag": "v0.3.0-beta.3",
+  "title": "Desktop Trainer 0.3.0-beta.3",
+  "targetCommit": "de242b65d3d17f5207e34f4060eef8d8621c3cb3",
+  "body": "Desktop Trainer is now published as an independent repository and download.\n\n- **Install:** download `FFWTrainer-0.3.0-beta.3.zip`, extract it, and copy the contents of `GameRoot` into the game folder.\n- **Source:** `FFWTrainer-source-0.3.0-beta.3.zip` contains only this component and its required dependencies.\n- **Requirements:** Windows x64; Far Far West baseline 0.3.0.7; a separate compatible UE4SS installation (tested build 1181). The desktop GUI also requires .NET Framework 4.x.\n- Runtime code is unchanged from the accepted beta.2 build. SHA-256 checksums are included.\n\n桌面修改器现已独立发布。安装时下载运行 ZIP，将 GameRoot 内的内容复制到游戏目录即可，无需命令行。源码、双语 README、安装与卸载说明及校验文件均已分开提供。\n\n永久进度请在酒馆修改；总点数解限后仍通过游戏原菜单加点。",
+  "assets": [
+    {
+      "name": "FFWTrainer-0.3.0-beta.3.zip",
+      "blob": "10f298cfd4ba237878941a14f393dd31cf7f2937",
+      "sha256": "e45cc6dda2e1fc4ae0d6b70859b8e7279e470e73cc60475b4a3ea1403283dc27",
+      "bytes": 180949,
+      "contentType": "application/zip"
+    },
+    {
+      "name": "FFWTrainer-source-0.3.0-beta.3.zip",
+      "blob": "7b9e22b63b8d0c7c980a051ef6cc68713e725d58",
+      "sha256": "b829f3ab5c37267bd029cca47ceded3d90df24a9d3340d51777185d80582c646",
+      "bytes": 240360,
+      "contentType": "application/zip"
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "blob": "1b276a26e6c1dc4c7558c1c7013b815fdcb6f82b",
+      "sha256": "b6728f0ff354b3df5cd5cef343f6df5007a2820d5ccd5505e709c6ab3c949d66",
+      "bytes": 195,
+      "contentType": "text/plain"
+    },
+    {
+      "name": "release-manifest.json",
+      "blob": "66f96a36eda5dddd9682e3e1749817b262b0af5a",
+      "sha256": "57495ff4d95fde04a42d823ecd198ed16cc1cdce804843d2f5e57b8532dcfb49",
+      "bytes": 516,
+      "contentType": "application/json"
+    }
+  ]
+}

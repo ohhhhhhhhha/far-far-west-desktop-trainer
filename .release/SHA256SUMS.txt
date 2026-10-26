@@ -1,0 +1,2 @@
+e45cc6dda2e1fc4ae0d6b70859b8e7279e470e73cc60475b4a3ea1403283dc27  FFWTrainer-0.3.0-beta.3.zip
+b829f3ab5c37267bd029cca47ceded3d90df24a9d3340d51777185d80582c646  FFWTrainer-source-0.3.0-beta.3.zip
