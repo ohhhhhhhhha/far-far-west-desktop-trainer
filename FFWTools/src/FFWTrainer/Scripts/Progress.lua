@@ -37,6 +37,17 @@ for _,school in ipairs({
     entries[#entries+1]={id=school[1]..'Level',nameZh=school[2]..'魔法等级',nameEn=school[3]..' magic level',
         category='magic',type='level',inventoryKey=school[1],min=1,max=100}
 end
+-- Halloween 2026: verified against the live cosmetic price tables and
+-- runtime inventory keys. *Cauldron keys are deposited ritual state, not stock.
+for _,resource in ipairs({
+    {'hauntedCandles','幽灵蜡烛（活动代币）','Haunted candles','moneyHauntedCandle'},
+    {'halloweenFeathers','万圣节羽毛','Halloween feathers','moneyHauntedFeather'},
+    {'halloweenPumpkins','万圣节南瓜','Halloween pumpkins','moneyHauntedPumpkin'},
+    {'halloweenSkulls','万圣节骷髅','Halloween skulls','moneyHauntedSkull'},
+}) do
+    entries[#entries+1]={id=resource[1],nameZh=resource[2],nameEn=resource[3],type='resource',
+        inventoryKey=resource[4],min=0,max=9999999,event='halloween2026'}
+end
 local byId={}
 for _,e in ipairs(entries) do e.category=e.category or e.type;byId[e.id]=e end
 function P.entries() return entries end

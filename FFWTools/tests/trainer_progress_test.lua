@@ -69,7 +69,7 @@ for _,e in ipairs(entries) do
     eq(ids[e.id],nil,'unique entry IDs');ids[e.id]=e
     eq(type(e.nameZh),'string');eq(type(e.nameEn),'string');eq(type(e.inventoryKey),'string')
 end
-eq(#entries,24,'three currencies, hero, fourteen weapons and six magic schools')
+eq(#entries,28,'three regular resources, four Halloween resources, hero, weapons and magic schools')
 eq(ids.gold.category,'resource');eq(ids.heroLevel.category,'level')
 eq(ids.itemPistolLevel.category,'level')
 for _,key in ipairs({'itemAcid','itemElec','itemFire','itemVoodoo','itemCactus','itemIce'}) do
@@ -205,4 +205,29 @@ eq(raw(magicAbsent,'itemIce'),11000);eq(raw(magicAbsent,'itemHero'),4500)
 ctx=fixture();local source=ctx.gameInstance.playerProgress[F.inventory]
 ctx.gameInstance.playerProgress[F.inventory]=setmetatable({}, {__index=function(_,k) if k=='ForEach' then return source.ForEach end;if k=='rows' then return source.rows end;return 'TrivialObject: 0' end})
 eq(P.read(ctx).values.gold.value,25,'native wrappers are read without assuming Lua primitives')
+-- Seasonal currencies follow the same explicit inventory/save boundary.
+for _,id in ipairs({'hauntedCandles','halloweenFeathers','halloweenPumpkins','halloweenSkulls'}) do
+    local descriptor=ids[id]
+    eq(type(descriptor),'table','selectable event currency '..id)
+    eq(descriptor.type,'resource');eq(descriptor.min,0);eq(descriptor.max,9999999)
+    local nativeKeys={hauntedCandles='moneyHauntedCandle',halloweenFeathers='moneyHauntedFeather',halloweenPumpkins='moneyHauntedPumpkin',halloweenSkulls='moneyHauntedSkull'}
+    eq(descriptor.inventoryKey,nativeKeys[id],'verified game inventory key')
+    eq(P.validate(id,'1000'),1000);eq(P.validate(id,'-1'),nil);eq(P.validate(id,'1.5'),nil)
+    local ctx=fixture()
+    for _,key in ipairs({'moneyHauntedFeatherCauldron','moneyHauntedPumpkinCauldron','moneyHauntedSkullCauldron'}) do
+        table.insert(ctx.gameInstance.playerProgress[F.inventory].rows,row(key,2))
+    end
+    local initial=P.read(ctx)
+    eq(initial.values[id].value,0,'an absent resource row is a known zero')
+    eq(ctx.gameInstance.saveCalls,0,'reading never grants tokens')
+    local ok=P.apply(id,'1000',ctx);eq(ok,true,'event grant uses the native inventory/save boundary')
+    eq(raw(ctx,descriptor.inventoryKey),1000);eq(ctx.gameInstance.saveCalls,1)
+    eq(raw(ctx,'moneyGold'),25);eq(raw(ctx,'someUnknownFutureKey'),123)
+    eq(raw(ctx,'moneyHauntedFeatherCauldron'),2);eq(raw(ctx,'moneyHauntedPumpkinCauldron'),2);eq(raw(ctx,'moneyHauntedSkullCauldron'),2)
+    local reflected=P.read(ctx);eq(reflected.values[id].value,1000)
+    local saved=ctx.gameInstance.SG_PlayerProgress.playerProgress[F.inventory]
+    local storedAmount=nil
+    for _,row in ipairs(saved.rows or saved) do if fname(row[F.name])==descriptor.inventoryKey then storedAmount=row[F.amount] end end
+    eq(storedAmount,1000,'save object receives the chosen event amount')
+end
 print('trainer_progress_test: '..checks..' checks passed')
