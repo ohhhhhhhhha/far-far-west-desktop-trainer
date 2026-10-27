@@ -1,0 +1,36 @@
+{
+  "tag": "v0.4.0-beta.2",
+  "targetCommit": "6740ccbe1f4fcedaf72253a96712bd6a316dd3e0",
+  "title": "In-game Trainer 0.4.0-beta.2 — Halloween currencies and input fixes",
+  "body": "## Changes\n\n- Add Haunted candles and Halloween feathers, pumpkins and skulls under F2 → Resources. Enter the desired total and Apply in the saloon; ingredients already deposited in the cauldron are preserved.\n- Fix F2 reopening the last F4 Joker page. F2 now returns to the last normal trainer category.\n- Establish UI input even when the cursor is already visible; restore gameplay input when no native menu was open.\n\nDownload **FFWTrainer-0.4.0-beta.2.zip**, extract it and copy the contents of GameRoot into the game folder. Fully restart the game. Keep Data/settings.json when updating. Source and SHA-256 checksums are separate assets.\n\n## 中文\n\n新增幽灵蜡烛、万圣节羽毛、南瓜和骷髅，在 F2 → 资源中输入目标总量并应用，保留坩埚已投入材料。修复 F2/F4 串页，并补齐光标已显示时的输入模式与关闭恢复。\n\n安装时复制 GameRoot 内容并完整重启游戏；更新保留 Data/settings.json。安装包不含个人数据、存档、日志或临时采样脚本。\n\n## Validation\n\nAll 30 standalone Lua test files passed. Currency keys were read from live game data; archive contents and hashes were checked. New currency save/reload and the reporter's exact mouse issue still need live acceptance. This is a prerelease; no real currency grant was performed during development.",
+  "assets": [
+    {
+      "name": "FFWTrainer-0.4.0-beta.2.zip",
+      "bytes": 160309,
+      "sha256": "87d1ff4a93ff6d154f568f269fd388a2a64a2644e75f106fe34eaf84e5a25c18",
+      "contentType": "application/zip",
+      "blob": "f311cc36725242ef461129c92745a3aaa7d05946"
+    },
+    {
+      "name": "FFWTrainer-source-0.4.0-beta.2.zip",
+      "bytes": 226775,
+      "sha256": "0b7ad85a1063616b11dd5b72a3f50afca27b950b8511999bdff130d4cad6dc55",
+      "contentType": "application/zip",
+      "blob": "a92640a7a302d4d0b900f5a305e9976cf2b0b087"
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "bytes": 195,
+      "sha256": "d774d9727eaaaa506827308c2142dabff718c79a65a8a73188e55a7e03dec7ad",
+      "contentType": "text/plain",
+      "blob": "175343925b1280daea429b22f6d106962e5bc861"
+    },
+    {
+      "name": "release-manifest.json",
+      "bytes": 516,
+      "sha256": "c7149da233f67c5b7b13aac442c7a550c6284f6b9511ebb63d2db0b4124c3ad1",
+      "contentType": "application/json",
+      "blob": "8501759aa4ed947a2baaca6a361e8dbf3db6cf73"
+    }
+  ]
+}
