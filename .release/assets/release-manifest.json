@@ -1,0 +1,20 @@
+{
+  "id": "FFWTrainer",
+  "version": "0.4.0-beta.3",
+  "framework": "UE4SS",
+  "installation": "manual-copy",
+  "artifacts": [
+    {
+      "file": "FFWTrainer-0.4.0-beta.3.zip",
+      "bytes": 161515,
+      "sha256": "1e1e2e2065b9bbcdfee43acd606e0222f8c220deefac60fe42332d40ad61ba61",
+      "kind": "runtime"
+    },
+    {
+      "file": "FFWTrainer-source-0.4.0-beta.3.zip",
+      "bytes": 230041,
+      "sha256": "c4657b956e40cb0cf2d7cd401092e95121fdb5c44abdbe62aef93f549c9c6256",
+      "kind": "source"
+    }
+  ]
+}

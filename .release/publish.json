@@ -1,0 +1,36 @@
+{
+  "tag": "v0.4.0-beta.3",
+  "targetCommit": "e07fc49a34f01132f107702f72a4ddd6700885b4",
+  "title": "In-game Trainer 0.4.0-beta.3 / 刷取与切图修复",
+  "body": "Fixes queued Joker spawning and panel events after travel.\n\n- A burst of F3 input keeps at most one pending spawn request. Selecting another card cancels that request.\n- Failed native spawn calls retain the two-second cooldown.\n- Old-controller panel clicks are ignored after travel.\n- All 31 offline Lua test files passed. The user confirmed F2/F4 mouse navigation and paging, a short F3 burst producing one pickup, pickup interaction, and use after returning to the saloon.\n\nDownload **FFWTrainer-0.4.0-beta.3.zip**, close the game, and copy the contents of GameRoot into the game folder. Keep Data/settings.json and fully restart. Requires a separate compatible UE4SS installation; baseline game 0.3.0.7 / UE4SS build 1181. Source ZIP and SHA-256 checksums are included.\n\n修复卡顿时积压刷卡请求、失败调用绕过冷却，以及切图后旧按钮仍触发操作的问题。31 份离线测试通过；用户已确认 F2/F4 鼠标分类翻页、少量 F3 刷卡与拾取、返回酒馆后继续操作均正常。\n\n更新时完全退出游戏，复制运行 ZIP 中 GameRoot 的内容，保留 Data/settings.json，再重新启动。附件仅包含修改器及所需依赖，不含个人数据、存档或日志。\n\nThe original reporter's native crash has not been independently reproduced; this remains a beta release. 原评论者的原生崩溃尚未独立复现。",
+  "assets": [
+    {
+      "name": "FFWTrainer-0.4.0-beta.3.zip",
+      "bytes": 161515,
+      "sha256": "1e1e2e2065b9bbcdfee43acd606e0222f8c220deefac60fe42332d40ad61ba61",
+      "contentType": "application/zip",
+      "blob": "69b9c12be85c631a989dbee9f10111de360552d3"
+    },
+    {
+      "name": "FFWTrainer-source-0.4.0-beta.3.zip",
+      "bytes": 230041,
+      "sha256": "c4657b956e40cb0cf2d7cd401092e95121fdb5c44abdbe62aef93f549c9c6256",
+      "contentType": "application/zip",
+      "blob": "bd83c08c0dae4cc3039a044b47bad3f1bb17371d"
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "bytes": 195,
+      "sha256": "6fba5249713fc45efb8d7fb8a8b467f49c3525d341e9cf081023c3e7c7fbe76a",
+      "contentType": "text/plain",
+      "blob": "50266953bb20ee11d1880cc04dedcab8147409df"
+    },
+    {
+      "name": "release-manifest.json",
+      "bytes": 516,
+      "sha256": "ab053df4d93bd03690d3e2a7a5eb6ae671057cfee2b203315cf7568932771104",
+      "contentType": "application/json",
+      "blob": "7d2685e25193b8ae56d9828aee012ad0ee201a96"
+    }
+  ]
+}
