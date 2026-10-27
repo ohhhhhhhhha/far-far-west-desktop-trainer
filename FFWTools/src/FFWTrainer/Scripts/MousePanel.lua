@@ -53,8 +53,13 @@ local function install()
             local object=context:get();local route=routes[identity(object)]
             if not route then return end
             local owner,entry=route.owner,route.entry
-            if owner.active and entry.visible and entry.enabled and owner:ownsInput() and owner:isCurrent(owner.options.controller) then
-                if owner.options.onAction then owner.options.onAction(entry.action,entry.value) end
+            if not owner.active or not entry.visible or not entry.enabled or not owner:ownsInput() then return end
+            local controller=owner.options.controller
+            if owner.options.getController then controller=owner.options.getController() end
+            -- The previous controller may stay valid during travel. Compare
+            -- against the current local controller, not the stored one itself.
+            if owner:isCurrent(controller) and owner.options.onAction then
+                owner.options.onAction(entry.action,entry.value)
             end
         end)
         hook={address=address,pre=pre,post=post}

@@ -107,5 +107,26 @@ now=now+3;mod.renderer.values.query='LightWeight';mod.update();keys[Key.F3]();eq
 mod.stop();eq(mod.enabled,false);eq(limit.enabled,false);eq(mod.errors,0)
 keys={};local reloaded=dofile(arg[1] or 'FFWTools/src/FFWTrainer/Scripts/main.lua')
 eq(limitCalls,1,'settings wait for the game thread');reloaded.update();eq(limitCalls,2);eq(limit.enabled,true)
-eq(applied,1);reloaded.stop();loadfile=realLoad
+eq(applied,1);reloaded.stop();
+-- Delayed game-thread work must not turn a burst of key presses into a spawn backlog.
+keys={};pawn.GetFullName=function() return 'BP_Player_C /Game/Levels/L_Map_FarWest.L_Map_FarWest:PersistentLevel.Player' end
+local queuedMod=dofile(arg[1] or 'FFWTools/src/FFWTrainer/Scripts/main.lua')
+keys[Key.F4]()
+local queue={};ExecuteInGameThread=function(fn) queue[#queue+1]=fn end
+local before=#generated
+for i=1,100 do keys[Key.F3]() end
+for _,fn in ipairs(queue) do now=now+3;fn() end
+eq(#generated-before,1,'a lagged burst of spawn key presses must not become a backlog of actors')
+eq(queuedMod.errors,0,'queued input must not cause renderer errors')
+queue={};keys[Key.F3]();queuedMod.ui:select('jokerMindShot')
+for _,fn in ipairs(queue) do now=now+3;fn() end
+eq(#generated-before,1,'a delayed spawn must not use a different card selected later')
+queue={};keys[Key.F3]();queuedMod.renderer.values.query='LightWeight'
+for _,fn in ipairs(queue) do now=now+3;fn() end
+eq(#generated-before,1,'editing the search before a queued spawn must not substitute another card')
+queue={};keys[Key.F3]();queuedMod.stop()
+for _,fn in ipairs(queue) do now=now+3;fn() end
+eq(#generated-before,1,'stopping the trainer cancels pending spawn input')
+ExecuteInGameThread=function(fn) fn() end;loadfile=realLoad
+
 print('joker_spawner_runtime_test: '..checks..' checks passed (in-game trainer)')

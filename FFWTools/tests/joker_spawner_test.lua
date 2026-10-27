@@ -63,4 +63,10 @@ ctx.controller=nil
 eq(Spawner.spawn('jokerLightWeight',ctx,106),false,'missing local player is a normal unavailable state');eq(#calls,3)
 eq(#s.equipped.itemHero,2,'preview and spawning do not directly grant a card')
 eq(#s.runtime,0)
+ctx.controller=controller;function controller:IsLocalPlayerController() return true end
+local failedCalls=0
+function ps:F_SpawnJoker_Server() failedCalls=failedCalls+1;error('simulated native call failure') end
+pcall(Spawner.spawn,'jokerLightWeight',ctx,1000)
+pcall(Spawner.spawn,'jokerLightWeight',ctx,1000)
+eq(failedCalls,1,'failed native requests must still observe the spawn cooldown')
 print('joker_spawner_test: '..checks..' checks passed')

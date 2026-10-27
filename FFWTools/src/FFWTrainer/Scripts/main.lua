@@ -51,9 +51,27 @@ local function inputs()
     end
 end
 local function render() S.visible=S.ui.visible;S.renderer:render(S.ui:model()) end
+local spawnPending=false
 function S.action(action,value)
     if not S.enabled then return end
-    ExecuteInGameThread(function() protected(function() inputs();S.ui:action(action,value);render() end) end)
+    local spawning=action=='spawn'
+    local selectedId=S.ui.selectedId
+    if spawning then
+        if spawnPending or not S.ui.visible or S.ui.section~='jokers' then return end
+        spawnPending=true
+    end
+    -- Keep one outstanding spawn intent. A slow frame must not turn repeated
+    -- F3/click input into actors queued for later, after the cooldown expires.
+    local scheduled=protected(function() ExecuteInGameThread(function()
+        protected(function()
+            if not S.enabled then return end
+            inputs()
+            if spawning and (S.ui.section~='jokers' or S.ui.selectedId~=selectedId) then return end
+            S.ui:action(action,value);render()
+        end)
+        if spawning then spawnPending=false end
+    end) end)
+    if not scheduled and spawning then spawnPending=false end
 end
 S.renderer=module('CanvasView').new{getController=function() return require('UEHelpers').GetPlayerController() end,
     layout=module('TrainerView').layout,onAction=S.action,zOrder=9960}

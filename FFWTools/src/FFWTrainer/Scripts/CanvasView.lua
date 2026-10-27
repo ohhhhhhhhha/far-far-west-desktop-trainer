@@ -53,7 +53,7 @@ function Renderer:_create(controller)
     self.textClass, self.barClass = StaticFindObject("/Script/UMG.TextBlock"), StaticFindObject("/Script/UMG.ProgressBar")
     if not self.options.passive then
         self.mouse=require('MousePanel').new({host=host,root=root,tree=tree,font=self.font,controller=controller,library=library,
-            onAction=self.options.onAction})
+            onAction=self.options.onAction,getController=self.options.getController})
     end
     self.textPool, self.barPool, self.inputs, self.scrolls, self.attached = {}, {}, {}, {}, false
 end

@@ -100,8 +100,10 @@ local function spawn(id,context,now)
     if length==0 then return false,'角色朝向尚未就绪。' end
     local location={X=position.X+150*forward.X/length,Y=position.Y+150*forward.Y/length,Z=position.Z-30}
     -- Dropped=true selects the exact replicated name; false generates random choices.
-    ps:F_SpawnJoker_Server(location,rarityBytes[card.rarity],FName(card.id),true)
+    -- Reserve the cooldown before crossing the native boundary: a call that
+    -- reports an error may already have started creating the pickup.
     lastRequest=now
+    ps:F_SpawnJoker_Server(location,rarityBytes[card.rarity],FName(card.id),true)
     return true,nil,card.id
 end
 function Spawner.spawn(...)
