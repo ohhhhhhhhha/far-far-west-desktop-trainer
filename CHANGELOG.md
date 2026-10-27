@@ -1,3 +1,12 @@
+# 0.4.0-beta.2
+
+- Add Haunted candles and Halloween feathers, pumpkins and skulls to Resources. Preserve deposited cauldron ingredients.
+- Fix F2 reopening the last F4 Joker page. F2 returns to the last normal trainer category.
+- Establish UI input when opening with an already-visible cursor, and restore game input when no native menu was open. The reporter's exact mouse issue is not yet reproduced.
+- Currency keys verified from live game data; no user save was edited during development. New currency save/reload acceptance remains pending.
+
+新增万圣节活动代币与三种材料；修复 F2 串页，补齐鼠标输入模式与关闭恢复。保留坩埚已投入材料。字段已从游戏内读取确认，实际新增代币保存仍待验证。
+
 # 0.4.0-beta.1
 
 - Restored in-game F2 trainer and F4 Joker search, with F1 apply and F3 spawn.

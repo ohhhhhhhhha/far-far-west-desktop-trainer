@@ -188,6 +188,7 @@
     "FFWTools/tests/overlay_mouse_engine.lua",
     "FFWTools/tests/testlib.lua",
     "FFWTools/tests/trainer_bridge_test.lua",
+    "FFWTools/tests/trainer_hotkeys_mouse_test.lua",
     "FFWTools/tests/trainer_ingame_test.lua",
     "FFWTools/tests/trainer_isolation_test.lua",
     "FFWTools/tests/trainer_progress_test.lua",
