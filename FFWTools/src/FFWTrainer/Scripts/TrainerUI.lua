@@ -10,7 +10,7 @@ local function section(entry)
 end
 local function trim(v) return tostring(v or ''):match('^%s*(.-)%s*$') end
 function UI.new(options)
-    return setmetatable({options=options or {},visible=false,section='resources',query='',page=1,target='',inputRevision=0,
+    return setmetatable({options=options or {},visible=false,section='resources',trainerSection='resources',query='',page=1,target='',inputRevision=0,
         queryRevision=0,progress={values={}},unlimited={enabled=false}},Controller)
 end
 function Controller:entries()
@@ -41,7 +41,10 @@ function Controller:refresh()
     self:select(self.selectedId)
 end
 function Controller:toggle(sectionId)
-    if self.visible and (not sectionId or self.section==sectionId) then self.visible=false;return end
+    if not sectionId then
+        if self.visible and self.section~='jokers' then self.visible=false;return end
+        sectionId=self.trainerSection or 'resources'
+    elseif self.visible and self.section==sectionId then self.visible=false;return end
     self.visible=true
     if sectionId and sectionId~=self.section then self:action('section',sectionId) end
     self:refresh()
@@ -62,6 +65,7 @@ function Controller:action(action,value)
     elseif action=='section' then
         local known=false;for _,s in ipairs(sections) do if s[1]==value then known=true end end
         if not known then return false end
+        if value~='jokers' then self.trainerSection=value end
         self.section=value;self.query='';self.queryRevision=self.queryRevision+1;self.selectedId=nil;self.target='';self.message=nil;self.page=1
         self:refresh()
         if value=='jokers' then self:select('jokerLightWeight') end

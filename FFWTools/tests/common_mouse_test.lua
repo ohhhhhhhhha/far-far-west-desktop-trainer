@@ -37,10 +37,11 @@ eq(e.controller.lookIgnores,0,'cross-VM handoff releases exactly one look lock')
 eq(e.modes[#e.modes].mode,'gameOnly')
 first:show();second:show();second:hide();first:hide()
 eq(e.controller.bShowMouseCursor,false,'reverse close order restores the same original cursor')
-e.controller.bShowMouseCursor=true
+e.controller.bShowMouseCursor=true;e.controller.Pawn.refBpMenu.isUiMode=true
 first:show();local afterShow=#e.modes;first:hide()
 eq(e.controller.bShowMouseCursor,true,'pre-existing menu cursor stays visible')
 eq(e.modes[#e.modes].mode,'viewportFocus');eq(#e.modes,afterShow+1)
+e.controller.Pawn.refBpMenu.isUiMode=false
 -- Esc/native menu opened while an overlay is visible must survive overlay close.
 e.controller.bShowMouseCursor=false
 first:show();e.controller.Pawn.refBpMenu.isMenuOpened=true

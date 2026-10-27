@@ -122,8 +122,9 @@ function Panel:show(focus)
     self.active=true
     controller.bShowMouseCursor=true
     focus=focus or self.options.host
-    if cursor then focus:SetUserFocus(controller)
-    else self.options.library:SetInputMode_GameAndUIEx(controller,focus,0,false,false) end
+    -- Cursor visibility does not establish the current Slate input mode.
+    -- Route input to the panel on open, including an already-visible cursor.
+    self.options.library:SetInputMode_GameAndUIEx(controller,focus,0,false,false)
     for _,entry in pairs(self.buttons) do entry.host:SetVisibility(entry.visible and 4 or 2) end
 end
 function Panel:hide()
@@ -139,7 +140,7 @@ function Panel:hide()
             end
             if valid(controller) then
                 if self.ownsLook then controller:SetIgnoreLookInput(false) end
-                if self.priorCursor or otherUi then self.options.library:SetFocusToGameViewport()
+                if self.priorUiMode or otherUi then self.options.library:SetFocusToGameViewport()
                 else self.options.library:SetInputMode_GameOnly(controller,false) end
                 controller.bShowMouseCursor=self.priorCursor or otherUi
             end
