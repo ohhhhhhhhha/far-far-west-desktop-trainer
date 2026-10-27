@@ -192,6 +192,7 @@
     "FFWTools/tests/trainer_ingame_test.lua",
     "FFWTools/tests/trainer_isolation_test.lua",
     "FFWTools/tests/trainer_progress_test.lua",
+    "FFWTools/tests/trainer_stale_click_test.lua",
     "FFWTools/tests/trainer_upgrade_limit_test.lua",
     "INSTALL.en.md",
     "INSTALL.zh-CN.md",

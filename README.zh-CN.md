@@ -1,8 +1,8 @@
 # Far Far West — 游戏内修改器
 
-[English](README.md) · [下载](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/tag/v0.4.0-beta.2) · [问题反馈](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/issues)
+[English](README.md) · [下载](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/tag/v0.4.0-beta.3) · [问题反馈](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/issues)
 
-**FFWTrainer · 0.4.0-beta.2 · UE4SS · Windows x64**
+**FFWTrainer · 0.4.0-beta.3 · UE4SS · Windows x64**
 
 按 **F2** 在游戏中唤出修改器。界面采用游戏字体、深色背景和黄铜色边框，支持鼠标选择、翻页、输入与详情滚动。显示语言跟随游戏，搜索同时接受中文和英文，英文不区分大小写。
 
@@ -15,7 +15,7 @@
 
 需要另行安装兼容的 [UE4SS](https://github.com/UE4SS-RE/RE-UE4SS/releases)。验证基线：Far Far West 0.3.0.7 / UE4SS build 1181。
 
-1. 退出游戏，下载 [FFWTrainer-0.4.0-beta.2.zip](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/download/v0.4.0-beta.2/FFWTrainer-0.4.0-beta.2.zip)。
+1. 退出游戏，下载 [FFWTrainer-0.4.0-beta.3.zip](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/download/v0.4.0-beta.3/FFWTrainer-0.4.0-beta.3.zip)。
 2. 将 ZIP 解压到游戏目录之外的普通文件夹。
 3. 在 Steam → 管理 → 浏览本地文件打开游戏目录，将 GameRoot 内的内容复制进去。
 4. 启动游戏，按 F2。
@@ -43,7 +43,13 @@
 
 源码位于 FFWTools/src/FFWTrainer/Scripts，所需依赖均已包含，可独立使用。本仓库不包含独立卡牌说明 Mod 或战斗统计。参见[开发说明](DEVELOPMENT.md)及[更新记录](CHANGELOG.md)。
 
-原进度保存、魔法等级和原菜单点数解限已由用户确认。本版通过离线 Lua、原生控件边界及 720p/双语布局检查；已修复 F2 记住刷卡页的问题，并补齐光标已显示时的 UI 输入模式和关闭恢复。反馈者的具体鼠标故障及新增代币保存仍待实机验收，因此以预发布版本提供。
+原进度保存、魔法流派等级和原菜单点数解限已由用户确认。本版通过全部 31 份离线 Lua 测试。2026-10-28 用户确认：F2/F4 鼠标分类与翻页、短时间连续 F3 只生成一张、正常拾取，以及返回酒馆后继续使用修改器均正常。
+
+## 刷取与切图修复
+
+游戏线程最多保留一个待执行刷卡请求；等待期间更换卡牌会取消旧请求。失败调用仍占用两秒冷却，切图后的旧控制器按钮事件不再生效。
+
+原评论者的游戏进程崩溃尚未独立复现。若仍发生，请提供具体按钮、最后生成的卡牌、游戏和 UE4SS 版本，以及去掉个人信息后的日志。更新后需完全退出并重启游戏。
 
 ## 反馈与许可
 

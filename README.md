@@ -1,8 +1,8 @@
 # Far Far West — In-game Trainer
 
-[简体中文](README.zh-CN.md) · [Download](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/tag/v0.4.0-beta.2) · [Report an issue](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/issues)
+[简体中文](README.zh-CN.md) · [Download](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/tag/v0.4.0-beta.3) · [Report an issue](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/issues)
 
-**FFWTrainer · 0.4.0-beta.2 · UE4SS · Windows x64**
+**FFWTrainer · 0.4.0-beta.3 · UE4SS · Windows x64**
 
 Press **F2** to open the trainer inside the game. The panel uses the game font, a dark background and brass accents, with mouse selection, paging, input and scrollable details. Display language follows the game; search accepts Chinese and English in either language.
 
@@ -15,7 +15,7 @@ Press **F2** to open the trainer inside the game. The panel uses the game font, 
 
 Requires a separate compatible [UE4SS installation](https://github.com/UE4SS-RE/RE-UE4SS/releases). Baseline: Far Far West 0.3.0.7 / UE4SS build 1181.
 
-1. Close the game and download [FFWTrainer-0.4.0-beta.2.zip](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/download/v0.4.0-beta.2/FFWTrainer-0.4.0-beta.2.zip).
+1. Close the game and download [FFWTrainer-0.4.0-beta.3.zip](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/download/v0.4.0-beta.3/FFWTrainer-0.4.0-beta.3.zip).
 2. Extract the ZIP outside the game folder.
 3. Copy the contents of GameRoot into the game directory opened through Steam → Manage → Browse local files.
 4. Start the game and press F2.
@@ -43,7 +43,13 @@ The Settings page controls the total-point budget switch. It persists in the mod
 
 Lua source is under FFWTools/src/FFWTrainer/Scripts, including the dependencies needed to run independently. This repository does not include the separate card-information mod or combat statistics. See [development notes](DEVELOPMENT.md) and [changes](CHANGELOG.md).
 
-The existing progression, magic-level saving and original-menu budget unlock were user-confirmed. This version passed offline Lua, native-widget boundary and 720p/bilingual layout checks. F2 routing now has its own trainer category. Opening the trainer establishes UI input even when the cursor is already visible; closing restores gameplay input when no native menu was open. The reporter’s exact mouse failure and new currency saves still need live acceptance; this is a prerelease.
+Existing progression saving, magic-school levels and native-menu budget unlocking were previously user-confirmed. This build passed all 31 offline Lua test files. On 2026-10-28, the user confirmed F2/F4 mouse navigation, paging, a short F3 input burst producing one pickup, pickup interaction, and trainer use after returning to the saloon.
+
+## Spawn and travel fixes
+
+At most one spawn request waits for the game thread. Changing the selected card cancels that pending request. Failed native requests still reserve the two-second cooldown, and clicks from a previous local controller are ignored after travel.
+
+The original reporter's game-process crash has not been independently reproduced. If it persists, report the exact button, last spawned card and game/UE4SS versions, along with a log with personal details removed. Fully exit and restart the game after updating.
 
 ## Support and license
 

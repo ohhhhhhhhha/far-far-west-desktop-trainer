@@ -1,5 +1,5 @@
 {
-  "version": "0.4.0-beta.2",
+  "version": "0.4.0-beta.3",
   "channel": "beta",
   "game": "Far Far West",
   "dataBaseline": "0.3.0.7",
@@ -11,7 +11,7 @@
   "ue4ssBuild": "1181",
   "ue4ssSourceCommit": "8333063595fa3c49ad307f3b0f732accbb760d25",
   "ue4ssDllSha256": "ce5e3c46a920cc00b2817ac61e438c9162830290379d0b5b9c4dfc2b29459290",
-  "runtimeValidation": "Halloween currency keys were read from live game tables/inventory. Existing progression saving was user-confirmed; new currency writes and the reported mouse issue still need live acceptance. Offline input/route and save-object checks passed.",
+  "runtimeValidation": "All 31 offline Lua test files passed. On 2026-10-28 the user confirmed F2/F4 mouse navigation and paging, a short F3 burst producing one pickup, pickup interaction, and trainer use after returning to the saloon. The original reporter native crash has not been independently reproduced.",
   "framework": "UE4SS",
   "installation": "manual-copy",
   "id": "FFWTrainer"

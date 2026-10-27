@@ -1,4 +1,16 @@
-# 0.4.0-beta.2
+# Changelog / 更新记录
+
+## 0.4.0-beta.3 — 2026-10-28
+
+- Keep at most one pending spawn request during game-thread stalls; cancel it if the selected card changes.
+- Keep the two-second cooldown after failed native spawn calls.
+- Reject previous-controller button clicks after travel.
+- All 31 offline Lua test files passed. User confirmed F2/F4 mouse navigation/paging, a short F3 burst producing one pickup, pickup interaction, and use after returning to the saloon.
+- The original reporter's native crash has not been independently reproduced.
+
+合并积压刷卡请求，保留失败调用冷却，拒绝切图后的旧按钮事件。31 份离线测试通过；用户已确认面板操作、少量刷卡拾取及回酒馆后的操作均正常。原评论者的原生崩溃尚未独立复现。
+
+## 0.4.0-beta.2
 
 - Add Haunted candles and Halloween feathers, pumpkins and skulls to Resources. Preserve deposited cauldron ingredients.
 - Fix F2 reopening the last F4 Joker page. F2 returns to the last normal trainer category.
