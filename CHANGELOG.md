@@ -1,5 +1,20 @@
 # Changelog / 更新记录
 
+## 0.4.0-beta.4 — 2026-10-28
+
+- Recheck input ownership on the game thread so queued clicks cannot act after travel or another overlay takes input.
+- On close, preserve the current native menu after pawn replacement and restore the old menu separately.
+- Cache button caption alignment after its initial setup.
+
+- Add saved Settings choices for ground pickups or direct native card acquisition. F3 uses the selected mode; no new key binding.
+
+- Use the verified local controller for both the panel and card previews.
+- Recover an active panel after a late native menu or a native cursor reset without resetting normal typing focus.
+- Pause spawning while 10 uncollected dropped Jokers are within 20 metres; only explicit spawn attempts scan pickups.
+- Stop loading the trainer with an actionable message when required UE4SS Lua APIs are missing. Pin the tested UE4SS 1181 archive link.
+- Offline regression coverage added. Native startup/spawn crashes remain unconfirmed; live acceptance is pending.
+
+
 ## 0.4.0-beta.3 — 2026-10-28
 
 - Keep at most one pending spawn request during game-thread stalls; cancel it if the selected card changes.

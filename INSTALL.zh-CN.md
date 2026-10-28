@@ -21,3 +21,11 @@
 退出游戏，移走该组件的 enabled.txt。如果 mods.txt 中还存在 FFWTrainer 条目，将其设为 0；enabled.txt 会覆盖该禁用标志。卸载时仅移除组件 Scripts，可保留 Data 设置。恢复时复制回备份文件与启用标记。卸载不会撤销游戏已保存的进度修改。
 
 [UE4SS 目录规范](https://docs.ue4ss.com/guides/creating-a-lua-mod.html) · [启用规则](https://docs.ue4ss.com/guides/installing-a-c%2B%2B-mod.html)
+
+## 已验证的 UE4SS 下载
+
+使用 [UE4SS v3.0.1-1181-g83330635](https://github.com/UE4SS-RE/RE-UE4SS/releases/download/experimental/UE4SS_v3.0.1-1181-g83330635.zip)，来自 [UE4SS 官方实验构建归档](https://github.com/UE4SS-RE/RE-UE4SS/releases/tag/experimental)。日志可能显示 v3.0.1 Beta #0，请同时核对 Git SHA 83330635，不能只看 3.0.1。实验最新版会变化，此链接固定为本 Mod 已测试的构建。
+
+退出游戏，将此框架 ZIP 中的 dwmapi.dll 和 ue4ss 文件夹放到 FarFarWest/Binaries/Win64，再按上面的步骤安装修改器。无需命令行。保留现有 Mod 和配置。
+
+若启动就崩溃，先检查安装的框架版本与目录，临时停用 FFWTrainer 后测试是否能进入标题；停用方法见上文。缺少修改器必需 Lua 接口时，本候选会停用并在 UE4SS.log 输出缺失接口与所需构建号。发生在 UE4SS 加载 Lua 之前的原生崩溃无法由该检查处理。

@@ -1,21 +1,21 @@
 # Far Far West — 游戏内修改器
 
-[English](README.md) · [下载](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/tag/v0.4.0-beta.3) · [问题反馈](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/issues)
+[English](README.md) · [下载](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/tag/v0.4.0-beta.4) · [问题反馈](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/issues)
 
-**FFWTrainer · 0.4.0-beta.3 · UE4SS · Windows x64**
+**FFWTrainer · 0.4.0-beta.4 · UE4SS · Windows x64**
 
 按 **F2** 在游戏中唤出修改器。界面采用游戏字体、深色背景和黄铜色边框，支持鼠标选择、翻页、输入与详情滚动。显示语言跟随游戏，搜索同时接受中文和英文，英文不区分大小写。
 
 - 金币、灵魂、蓝图，以及幽灵蜡烛、万圣节羽毛/南瓜/骷髅：0–9,999,999。
 - 角色、14 种武器、六种魔法流派等级：1–100。
-- 搜索 153 张普通奇术卡，在任务中生成选中拾取物。
+- 搜索 153 张普通奇术卡，在任务中生成地面拾取物或直接获得。
 - 解除总属性点额度，继续在原装备菜单加点；保留单项限制、金币费用及原生确认保存。
 
 ## 安装
 
-需要另行安装兼容的 [UE4SS](https://github.com/UE4SS-RE/RE-UE4SS/releases)。验证基线：Far Far West 0.3.0.7 / UE4SS build 1181。
+请安装已验证的 [UE4SS v3.0.1-1181-g83330635](https://github.com/UE4SS-RE/RE-UE4SS/releases/download/experimental/UE4SS_v3.0.1-1181-g83330635.zip)。验证基线：Far Far West 0.3.0.7 / UE4SS build 1181。
 
-1. 退出游戏，下载 [FFWTrainer-0.4.0-beta.3.zip](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/download/v0.4.0-beta.3/FFWTrainer-0.4.0-beta.3.zip)。
+1. 退出游戏，下载 [FFWTrainer-0.4.0-beta.4.zip](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/download/v0.4.0-beta.4/FFWTrainer-0.4.0-beta.4.zip)。
 2. 将 ZIP 解压到游戏目录之外的普通文件夹。
 3. 在 Steam → 管理 → 浏览本地文件打开游戏目录，将 GameRoot 内的内容复制进去。
 4. 启动游戏，按 F2。
@@ -29,7 +29,7 @@
 | F2 | 打开 / 关闭常规修改器，从 F4 返回上次修改器分类 |
 | F4 | 打开 / 关闭奇术卡搜索页 |
 | F1 或“应用” | 应用选中项目的目标数值 |
-| F3 或“生成一张” | 在刷卡页打开时生成选中卡牌 |
+| F3 或“生成一张” | 在刷卡页打开时按选中模式获得卡牌 |
 | F5 / F6 | 上一项 / 下一项 |
 | 鼠标 | 选择分类与项目、翻页、输入和滚动详情 |
 
@@ -43,9 +43,13 @@
 
 源码位于 FFWTools/src/FFWTrainer/Scripts，所需依赖均已包含，可独立使用。本仓库不包含独立卡牌说明 Mod 或战斗统计。参见[开发说明](DEVELOPMENT.md)及[更新记录](CHANGELOG.md)。
 
-原进度保存、魔法流派等级和原菜单点数解限已由用户确认。本版通过全部 31 份离线 Lua 测试。2026-10-28 用户确认：F2/F4 鼠标分类与翻页、短时间连续 F3 只生成一张、正常拾取，以及返回酒馆后继续使用修改器均正常。
+原进度保存、魔法流派等级和原菜单点数解限已由用户确认。上一版通过全部 31 份离线 Lua 测试。2026-10-28 用户确认：F2/F4 鼠标分类与翻页、短时间连续 F3 只生成一张、正常拾取，以及返回酒馆后继续使用修改器均正常。
 
-## 刷取与切图修复
+## 0.4.0-beta.4 测试候选
+
+在“设置”中选择 **生成到地面**（默认）或 **直接获得**，选择会保存。F3 和原有操作按钮按所选模式执行，不新增按键。直接获得沿用原生卡牌获得流程，条件效果按游戏规则触发。
+
+本候选修复面板误用远端控制器、原生菜单晚加载或重置后失去鼠标的问题；周围 20 米内已有 10 张未拾取掉落卡时暂停刷取，拾取后恢复。初版的启动、鼠标与两种刷卡模式已由用户确认正常；后续输入交接修复已通过离线回归。评论中的启动和刷卡崩溃尚未独立复现。
 
 游戏线程最多保留一个待执行刷卡请求；等待期间更换卡牌会取消旧请求。失败调用仍占用两秒冷却，切图后的旧控制器按钮事件不再生效。
 

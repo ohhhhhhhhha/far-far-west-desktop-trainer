@@ -21,3 +21,11 @@ The package does not include personal settings, saves or statistics. An empty Da
 Close the game and remove the component’s enabled.txt. If mods.txt also contains FFWTrainer, set that entry to 0. The enabled.txt marker otherwise overrides that flag. Remove only the mod’s Scripts folder to uninstall; keep Data if you want its settings. Restore the backed-up files and activation marker to revert. Removing the mod does not reverse progression already saved by the game.
 
 [UE4SS layout](https://docs.ue4ss.com/guides/creating-a-lua-mod.html) · [Activation rules](https://docs.ue4ss.com/guides/installing-a-c%2B%2B-mod.html)
+
+## Verified UE4SS download
+
+Use [UE4SS v3.0.1-1181-g83330635](https://github.com/UE4SS-RE/RE-UE4SS/releases/download/experimental/UE4SS_v3.0.1-1181-g83330635.zip) from the [official experimental archive](https://github.com/UE4SS-RE/RE-UE4SS/releases/tag/experimental). The log may identify it as v3.0.1 Beta #0; also check Git SHA 83330635. The experimental latest build changes over time, so this link pins the version tested with this mod.
+
+Close the game and place the framework ZIP's dwmapi.dll and ue4ss folder in FarFarWest/Binaries/Win64, then install the trainer as described above. Use normal file extraction/copying. Preserve existing mods and configuration.
+
+For a startup crash, verify the framework version and location, then temporarily disable FFWTrainer as described above and test whether the title screen loads. If a required Lua API is missing, this candidate disables the trainer and names the missing API and verified build in UE4SS.log. It cannot intercept a native loader crash before Lua starts.
