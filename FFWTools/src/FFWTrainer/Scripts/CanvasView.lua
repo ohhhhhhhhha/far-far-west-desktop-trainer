@@ -147,7 +147,7 @@ function Renderer:render(model)
                 entry.label.Slot:SetHorizontalAlignment(0)
                 entry.label.Slot:SetVerticalAlignment(2)
                 entry.label.Slot:SetPadding({Left=6,Top=0,Right=6,Bottom=0})
-                entry.statsCaptionAligned=true
+                entry.captionAligned=true
             end
             if command.backgroundColor then entry.button:SetBackgroundColor(tint(command.backgroundColor)) end
             if command.textColor then

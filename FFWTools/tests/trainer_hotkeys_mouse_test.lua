@@ -42,4 +42,32 @@ T.test('closing the trainer preserves an already-open native menu',function()
  end)
  e.restore();if not ok then error(err,0) end
 end)
+T.test('an active panel acquires a late menu and recovers native cursor reset without stealing edit focus',function()
+ local e=dofile('FFWTools/tests/overlay_mouse_engine.lua').install()
+ local menu=e.controller.Pawn.refBpMenu;e.controller.Pawn.refBpMenu=nil
+ local Mouse=dofile('FFWTools/src/FFWTrainer/Scripts/MousePanel.lua')
+ local panel=Mouse.new{host=e.object('Host'),root=e.object('Canvas'),tree=e.object('Tree'),font=e.object('Font'),controller=e.controller,library=StaticFindObject('/Script/UMG.WidgetBlueprintLibrary')}
+ panel:show();local calls=#e.modes
+ e.controller.Pawn.refBpMenu=menu;panel:show()
+ T.eq(e.nativeRecentersMouse(),false,'late menu must not keep recentering the cursor')
+ T.eq(#e.modes,calls,'normal refresh must not steal typing focus')
+ menu.isUiMode=false;e.controller.bShowMouseCursor=false;panel:show()
+ T.eq(e.nativeRecentersMouse(),false);T.eq(e.controller.bShowMouseCursor,true)
+ T.eq(e.modes[#e.modes].mode,'gameAndUI')
+ panel:hide();T.eq(menu.isUiMode,false);T.eq(e.controller.lookIgnores,0)
+ panel:dispose();e.restore()
+end)
+T.test('closing before the next refresh preserves a native menu on the replacement pawn',function()
+ local e=dofile('FFWTools/tests/overlay_mouse_engine.lua').install()
+ local Mouse=dofile('FFWTools/src/FFWTrainer/Scripts/MousePanel.lua')
+ local panel=Mouse.new{host=e.object('Host'),root=e.object('Canvas'),tree=e.object('Tree'),font=e.object('Font'),controller=e.controller,library=StaticFindObject('/Script/UMG.WidgetBlueprintLibrary')}
+ local original=e.controller.Pawn.refBpMenu;panel:show()
+ local newMenu=e.object('Replacement native menu');newMenu.isUiMode=true;newMenu.isMenuOpened=true
+ e.controller.Pawn=e.object('Replacement pawn');e.controller.Pawn.refBpMenu=newMenu
+ panel:hide()
+ T.eq(e.controller.bShowMouseCursor,true,'closing trainer must not hide the new native menu cursor')
+ T.eq(e.modes[#e.modes].mode,'viewportFocus')
+ T.eq(newMenu.isUiMode,true);T.eq(original.isUiMode,false);T.eq(e.controller.lookIgnores,0)
+ panel:dispose();e.restore()
+end)
 T.finish()

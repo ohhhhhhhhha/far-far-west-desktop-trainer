@@ -11,7 +11,7 @@ end
 local function trim(v) return tostring(v or ''):match('^%s*(.-)%s*$') end
 function UI.new(options)
     return setmetatable({options=options or {},visible=false,section='resources',trainerSection='resources',query='',page=1,target='',inputRevision=0,
-        queryRevision=0,progress={values={}},unlimited={enabled=false}},Controller)
+        queryRevision=0,spawnMode=options and options.spawnMode=='direct' and 'direct' or 'ground',progress={values={}},unlimited={enabled=false}},Controller)
 end
 function Controller:entries()
     if self.section=='jokers' then return Spawner.entries(self.query) end
@@ -69,6 +69,13 @@ function Controller:action(action,value)
         self.section=value;self.query='';self.queryRevision=self.queryRevision+1;self.selectedId=nil;self.target='';self.message=nil;self.page=1
         self:refresh()
         if value=='jokers' then self:select('jokerLightWeight') end
+    elseif action=='spawnMode' and self.section=='settings' then
+        if value~='ground' and value~='direct' then return false end
+        if value==self.spawnMode then return true end
+        if not self.options.setSpawnMode then return false end
+        local ok,zh,en=self.options.setSpawnMode(value)
+        if ok then self.spawnMode=value end
+        self.message={zh=zh,en=en,success=ok==true}
     elseif action=='select' then self:select(value)
     elseif action=='previousPage' or action=='nextPage' then
         local entries=self:entries();local count=math.max(1,math.ceil(#entries/8))
@@ -79,7 +86,7 @@ function Controller:action(action,value)
         self.message={zh=zh,en=type(detail)=='table' and detail.messageEn or detail,success=ok==true}
         self:refresh()
     elseif action=='spawn' and self.section=='jokers' and self.selectedId then
-        local ok,_,status=(self.options.spawn or Spawner.spawn)(self.selectedId)
+        local ok,_,status=(self.options.spawn or Spawner.spawn)(self.selectedId,nil,nil,self.spawnMode)
         self.message={spawn=status,success=ok==true}
     elseif action=='unlimited' and self.section=='settings' and self.options.setUnlimited then
         local ok,zh,en=self.options.setUnlimited(not self.unlimited.enabled)
@@ -90,7 +97,7 @@ end
 function Controller:model()
     if not self.visible then return nil end
     local entries=self:entries();local selected=self:select(self.selectedId)
-    local model={section=self.section,query=self.query,queryKey=self.queryRevision,rows={},tabs={},selected=selected,
+    local model={section=self.section,spawnMode=self.spawnMode,query=self.query,queryKey=self.queryRevision,rows={},tabs={},selected=selected,
         inputValue=self.target,inputKey=self.inputRevision,page=self.page,pageCount=math.max(1,math.ceil(#entries/8)),count=#entries,
         canApply=self.progress.canApply==true,unlimited=self.unlimited.enabled==true}
     for _,s in ipairs(sections) do model.tabs[#model.tabs+1]={id=s[1],label=L.choose(s[2],s[3]),selected=self.section==s[1]} end
@@ -100,7 +107,7 @@ function Controller:model()
             selected=selected and entry.id==selected.id,value=self.section~='jokers' and v and v.value or nil}
     end
     if self.section=='settings' then
-        model.heading=L.choose('总点数解限','Total upgrade budget')
+        model.heading=L.choose('修改器设置','Trainer settings')
         model.detail=L.choose('解除装备属性的总点数限制。继续在游戏原菜单分配属性点并确认购买。\n\n单项属性限制与金币费用沿用游戏规则。',
             'Remove the total attribute point budget. Allocate points and confirm purchases in the original game menu.\n\nPer-attribute limits and gold costs follow the game rules.')
         model.status=L.choose(self.unlimited.messageZh or '',self.unlimited.messageEn or '')
@@ -110,7 +117,7 @@ function Controller:model()
         model.heading=L.card(selected.id,'name')
         local snapshot=self.inventory or require('Inventory').fromSnapshot({})
         local index=1;for i,e in ipairs(entries) do if e.id==selected.id then index=i end end
-        local page=Spawner.page(snapshot,index,nil,self.query)
+        local page=Spawner.page(snapshot,index,nil,self.query,self.spawnMode)
         model.detail=page.plainDetail or page.detail;model.noBonus=page.noBonus
         model.canSpawn=self.options.canSpawn and self.options.canSpawn() or false
     else

@@ -7,6 +7,7 @@ for i=1,2 do
     local callbacks,files={},{}
     env.RegisterKeyBind=function(key,fn) callbacks[key]=fn end
     env.LoopInGameThreadWithDelay=function() end
+    env.ExecuteInGameThread=function(fn) fn() end
     env.StaticFindObject=function() return nil end
     env.FindAllOf=function() return {} end
     env.loadfile=function(path,mode,moduleEnv)

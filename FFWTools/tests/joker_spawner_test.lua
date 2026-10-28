@@ -1,3 +1,4 @@
+FindAllOf=function() return {} end
 package.path='FFWTools/src/FFWTrainer/Scripts/?.lua;'..package.path
 package.path='FFWTools/src/FFWTrainer/Scripts/?.lua;'..package.path
 local checks=0

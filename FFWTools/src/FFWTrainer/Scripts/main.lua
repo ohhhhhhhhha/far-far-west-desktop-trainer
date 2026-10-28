@@ -1,3 +1,12 @@
+-- Runtime API guard runs before loading modules or registering native work.
+for _,api in ipairs({'RegisterKeyBind','ExecuteInGameThread','LoopInGameThreadWithDelay'}) do
+    if type(_G[api])~='function' then
+        local message='Missing '..api..'. FFWTrainer requires the verified UE4SS v3.0.1-1181-g83330635 build; see INSTALL.en.md.'
+        print('[FFWTrainer] disabled: '..message..'\n')
+        local disabled={enabled=false,compatibilityError=message};_G.FFWTrainer=disabled
+        return disabled
+    end
+end
 -- Game-native trainer. No desktop client, command polling or background progress writes.
 local directory=debug.getinfo(1,'S').source:sub(2):gsub('\\','/'):match('^(.*)/')
 assert(directory,'FFWTrainer needs a file-backed entry point')
@@ -26,21 +35,43 @@ local function protected(fn)
 end
 S.limit=module('UpgradeLimit').new()
 local settingsPath=directory..'/../Data/settings.json'
-local restoreUnlimited=false
+local settings={unlimited=false,spawnMode='ground'}
 local saved=Bridge.readFile(settingsPath)
-if saved then local ok,value=pcall(Json.decode,saved);restoreUnlimited=ok and type(value)=='table' and value.unlimited==true end
+if saved then
+    local ok,value=pcall(Json.decode,saved)
+    if ok and type(value)=='table' then settings=value end
+end
+settings.unlimited=settings.unlimited==true
+settings.spawnMode=settings.spawnMode=='direct' and 'direct' or 'ground'
+local restoreUnlimited=settings.unlimited
+local function writeSettings(unlimited,mode)
+    local nextSettings={};for k,v in pairs(settings) do nextSettings[k]=v end
+    nextSettings.unlimited=unlimited;nextSettings.spawnMode=mode
+    local ok,err=Bridge.writeFile(settingsPath,Json.encode(nextSettings))
+    if ok then settings=nextSettings end
+    return ok,err
+end
+local function setSpawnMode(mode)
+    if mode~='ground' and mode~='direct' then return false,'无效的刷卡方式。','Invalid Joker mode.' end
+    local ok,err=writeSettings(settings.unlimited,mode)
+    if not ok then log(err);return false,'设置未保存，请重试。','Settings could not be saved; try again.' end
+    return true,'刷卡方式已保存。','Joker mode saved.'
+end
 local function setUnlimited(enabled)
     local previous=S.limit:status().enabled
     local ok,zh,en=S.limit:setEnabled(enabled);if not ok then return ok,zh,en end
-    local written,err=Bridge.writeFile(settingsPath,Json.encode({unlimited=enabled}))
+    local written,err=writeSettings(enabled,settings.spawnMode)
     if not written then
         S.limit:setEnabled(previous);log(err)
         return false,'设置未保存，已恢复原状态。','Settings could not be saved; the previous state was restored.'
     end
     return true,zh,en
 end
-S.ui=module('TrainerUI').new{read=Progress.read,inventory=Inventory.read,apply=Progress.apply,spawn=Spawner.spawn,
-    canSpawn=Spawner.canSpawn,getUnlimited=function() return S.limit:status() end,setUnlimited=setUnlimited}
+S.ui=module('TrainerUI').new{read=Progress.read,inventory=function()
+    local context=Spawner.context()
+    return Inventory.readObjects(context.gameInstance,context.playerState,context.pawn)
+end,apply=Progress.apply,spawn=Spawner.spawn,
+    canSpawn=Spawner.canSpawn,getUnlimited=function() return S.limit:status() end,setUnlimited=setUnlimited,setSpawnMode=setSpawnMode,spawnMode=settings.spawnMode}
 local function inputs()
     if not S.ui.visible or not S.renderer.attached then return end
     local query=S.renderer:input('query');if query and S.ui.section~='settings' then S.ui:setQuery(query) end
@@ -54,8 +85,10 @@ local function render() S.visible=S.ui.visible;S.renderer:render(S.ui:model()) e
 local spawnPending=false
 function S.action(action,value)
     if not S.enabled then return end
+    local inputSource=S.renderer and S.renderer.mouse
     local spawning=action=='spawn'
     local selectedId=S.ui.selectedId
+    local spawnMode=S.ui.spawnMode
     if spawning then
         if spawnPending or not S.ui.visible or S.ui.section~='jokers' then return end
         spawnPending=true
@@ -65,15 +98,19 @@ function S.action(action,value)
     local scheduled=protected(function() ExecuteInGameThread(function()
         protected(function()
             if not S.enabled then return end
+            -- Native clicks/key actions wait for the game thread. Revalidate
+            -- their panel lease there, after any travel or overlay handoff.
+            if inputSource and (inputSource~=S.renderer.mouse or not inputSource.active or not inputSource:ownsInput()
+                or not inputSource:isCurrent(S.renderer.options.getController())) then return end
             inputs()
-            if spawning and (S.ui.section~='jokers' or S.ui.selectedId~=selectedId) then return end
+            if spawning and (S.ui.section~='jokers' or S.ui.selectedId~=selectedId or S.ui.spawnMode~=spawnMode) then return end
             S.ui:action(action,value);render()
         end)
         if spawning then spawnPending=false end
     end) end)
     if not scheduled and spawning then spawnPending=false end
 end
-S.renderer=module('CanvasView').new{getController=function() return require('UEHelpers').GetPlayerController() end,
+S.renderer=module('CanvasView').new{getController=function() return Spawner.context().controller end,
     layout=module('TrainerView').layout,onAction=S.action,zOrder=9960}
 function S.toggle(section)
     ExecuteInGameThread(function() protected(function() inputs();L.refresh();S.ui:toggle(section);render() end) end)
@@ -102,5 +139,5 @@ for _,entry in ipairs({{'F5',-1},{'F6',1}}) do bind(entry[1],function()
 end) end
 bind('F7',S.hide);bind('F8',S.hide)
 LoopInGameThreadWithDelay(250,function() if S.enabled then protected(S.update) end end)
-log('in-game trainer loaded: F2 toolkit, F4 joker search, F1 apply, F3 spawn. Desktop commands are disabled.')
+log('in-game trainer 0.4.0-beta.4 loaded: F2 toolkit, F4 joker search, F1 apply, F3 spawn. Desktop commands are disabled.')
 return S

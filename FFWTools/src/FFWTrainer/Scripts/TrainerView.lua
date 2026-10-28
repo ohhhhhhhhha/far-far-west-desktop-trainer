@@ -22,7 +22,11 @@ function V.layout(m,vp)
     if m.section=='settings' then
         text(m.heading,24,138,w-48,21,'#E2B969')
         button('unlimited',m.unlimited and L.choose('[开] 总点数解限','[ON] Unlimited total budget') or L.choose('[关] 总点数解限','[OFF] Unlimited total budget'),24,192,math.min(w-48,470),44,'unlimited')
-        c[#c+1]={kind='scrollText',id='detail',text=m.detail,resetKey='settings',x=24,y=258,width=w-48,height=h-398,size=17}
+        text(L.choose('刷卡方式','Joker mode'),24,252,w-48,17,'#E2B969')
+        local mw=(math.min(w-48,600)-8)/2
+        button('mode-ground',L.choose('生成到地面','Drop on ground'),24,294,mw,40,'spawnMode','ground',m.spawnMode=='ground')
+        button('mode-direct',L.choose('直接获得','Gain directly'),32+mw,294,mw,40,'spawnMode','direct',m.spawnMode=='direct')
+        c[#c+1]={kind='scrollText',id='detail',text=m.detail,resetKey='settings',x=24,y=352,width=w-48,height=h-510,size=17}
     else
         input('query',m.query,m.queryKey,L.choose('搜索中文 / English','Search Chinese / English'),24,126,left)
         local rowHeight=math.min(44,math.floor((h-280)/8))
@@ -44,7 +48,7 @@ function V.layout(m,vp)
         end
         c[#c+1]={kind='scrollText',id='detail',text=m.detail or '',resetKey=m.selected and m.selected.id or m.section,
             x=right,y=detailTop,width=rw,height=math.max(48,h-168-detailTop),size=16}
-        if m.section=='jokers' then button('spawn',L.choose('生成一张 / F3','Spawn one / F3'),right,h-126,rw,42,nil,nil,true,m.canSpawn and m.selected~=nil) end
+        if m.section=='jokers' then button('spawn',m.spawnMode=='direct' and L.choose('直接获得 / F3','Gain directly / F3') or L.choose('生成一张 / F3','Spawn one / F3'),right,h-126,rw,42,nil,nil,true,m.canSpawn and m.selected~=nil) end
     end
     if m.section~='jokers' then text(m.status,24,h-138,w-48,13,'#BCB1A3') end
     bar(6,h-52,w-12,46,'#17141D')

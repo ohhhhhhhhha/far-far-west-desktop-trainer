@@ -107,8 +107,25 @@ function Panel:button(id,spec)
     return entry
 end
 function Panel:show(focus)
-    if self.active then return end
     local controller=self.options.controller
+    if self.active then
+        if not self:ownsInput() or not self:isCurrent(controller) then return end
+        local menu=menuFor(controller)
+        if identity(menu)~=identity(self.menu) then
+            if valid(self.menu) then self.menu.isUiMode=self.priorUiMode or nativeMenuOpen(self.menu) end
+            self.menu=menu;self.priorUiMode=field(menu,'isUiMode')==true
+            shared('menu',identity(menu),true);shared('uiMode',self.priorUiMode,true)
+        end
+        if self.menu then self.menu.isUiMode=true end
+        -- Native pickup/menu transitions can return input to gameplay while
+        -- our panel stays open. Reacquire only when the cursor was removed;
+        -- ordinary refresh must preserve the user's text editing focus.
+        if controller.bShowMouseCursor~=true then
+            controller.bShowMouseCursor=true
+            self.options.library:SetInputMode_GameAndUIEx(controller,focus or self.options.host,0,false,false)
+        end
+        return
+    end
     assert(self:isCurrent(controller),'mouse panel owner changed')
     local inherited=shared('owner') and shared('controller')==self.controllerKey
     local cursor=controller.bShowMouseCursor==true
@@ -139,15 +156,21 @@ function Panel:hide()
             -- The later-opened overlay inherits the original cursor baseline.
             -- A delayed hide from the older overlay must not release its input.
             local controller=self.options.controller
-            local otherUi=nativeMenuOpen(self.menu)
+            -- Possession/menu replacement can happen before our next render.
+            -- Restore the current native menu's input, not the old pawn's UI.
+            local currentMenu=menuFor(controller)
+            local sameMenu=identity(currentMenu)==identity(self.menu)
+            local keepUi=self.priorUiMode
+            if not sameMenu then keepUi=field(currentMenu,'isUiMode')==true end
+            local otherUi=nativeMenuOpen(currentMenu)
             if valid(self.menu) and field(self.menu,'isUiMode')==true then
-                self.menu.isUiMode=self.priorUiMode or otherUi
+                self.menu.isUiMode=self.priorUiMode or nativeMenuOpen(self.menu)
             end
             if valid(controller) then
                 if self.ownsLook then controller:SetIgnoreLookInput(false) end
-                if self.priorUiMode or otherUi then self.options.library:SetFocusToGameViewport()
+                if keepUi or otherUi then self.options.library:SetFocusToGameViewport()
                 else self.options.library:SetInputMode_GameOnly(controller,false) end
-                controller.bShowMouseCursor=self.priorCursor or otherUi
+                controller.bShowMouseCursor=self.priorCursor or otherUi or (not sameMenu and keepUi)
             end
             shared('owner',nil,true);shared('controller',nil,true);shared('cursor',nil,true)
             shared('menu',nil,true);shared('uiMode',nil,true);shared('lookLock',nil,true)
