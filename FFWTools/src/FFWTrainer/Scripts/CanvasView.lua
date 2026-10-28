@@ -6,11 +6,20 @@ local function valid(object)
 end
 local function identity(object)
     if not valid(object) then return nil end
-    return object:GetFullName()..'@'..tostring(object:GetAddress())
+    local ok,key=pcall(function() return object:GetFullName()..'@'..tostring(object:GetAddress()) end)
+    return ok and key or nil
 end
 local function world(object)
     local ok,value=pcall(function() return object:GetWorld() end)
     return ok and identity(value) or nil
+end
+local function asset(path)
+    local object=StaticFindObject(path)
+    if not valid(object) and type(LoadAsset)=='function' then
+        LoadAsset(path);object=StaticFindObject(path)
+    end
+    assert(valid(object),'panel asset unavailable: '..path)
+    return object
 end
 local function tint(hex, alpha)
     local function linear(byte)
@@ -34,8 +43,12 @@ function Renderer:_create(controller)
     for _, path in ipairs(requiredFunctions) do assert(valid(StaticFindObject(path)), "missing UMG binding " .. path) end
     controller = controller or self.options.getController()
     assert(valid(controller), "local controller unavailable")
-    local hostClass = StaticFindObject("/Game/Interfaces/UI_Joker_Informations.UI_Joker_Informations_C")
-    local library = StaticFindObject("/Script/UMG.WidgetBlueprintLibrary"):GetCDO()
+    local hostClass = asset("/Game/Interfaces/UI_Joker_Informations.UI_Joker_Informations_C")
+    local font = asset("/Game/Materials/Fonts/Font_Text.Font_Text")
+    local libraryClass=StaticFindObject("/Script/UMG.WidgetBlueprintLibrary")
+    assert(valid(libraryClass), "widget library is not loaded")
+    local library = libraryClass:GetCDO()
+    assert(valid(library), "widget library default object unavailable")
     local host = library:Create(controller, hostClass, controller)
     assert(valid(host), "independent panel host creation failed")
     host.bHasScriptImplementedPaint, host.bIsFocusable = false, not self.options.passive
@@ -48,8 +61,7 @@ function Renderer:_create(controller)
     root:SetVisibility(self.options.passive and 3 or 4);host:SetVisibility(2)
     self.host, self.root, self.tree, self.controller = host, root, tree, controller
     self.controllerKey,self.worldKey=identity(controller),world(controller)
-    self.font = StaticFindObject("/Game/Materials/Fonts/Font_Text.Font_Text")
-    assert(valid(self.font), "game Chinese font is not loaded")
+    self.font = font
     self.textClass, self.barClass = StaticFindObject("/Script/UMG.TextBlock"), StaticFindObject("/Script/UMG.ProgressBar")
     if not self.options.passive then
         self.mouse=require('MousePanel').new({host=host,root=root,tree=tree,font=self.font,controller=controller,library=library,
@@ -68,11 +80,39 @@ function Renderer:_node(pool, index, class)
     if not item.attached then item.slot, item.attached = self.root:AddChildToCanvas(item.widget), true end
     return item
 end
-function Renderer:hide()
-    if self.mouse then self.mouse:hide() end
-    if valid(self.host) then self.host:SetVisibility(2) end
-    if valid(self.host) and self.attached then self.host:RemoveFromParent() end
-    self.attached, self.lastModel = false, nil
+local function cleanup(self,fn)
+    local ok,err=pcall(fn);if not ok then self.cleanupError=tostring(err) end
+end
+function Renderer:hide(abandon)
+    if abandon==nil and self.controllerKey then
+        local ok,current=pcall(self.isCurrent,self)
+        abandon=not (ok and current)
+    end
+    local attached=self.attached
+    self.attached,self.lastModel=false,nil
+    if self.mouse then
+        cleanup(self,function() self.mouse:hide(abandon) end)
+        self.cleanupError=self.mouse.cleanupError or self.cleanupError
+    end
+    if not abandon and valid(self.host) then
+        cleanup(self,function() self.host:SetVisibility(2) end)
+        if attached then cleanup(self,function() self.host:RemoveFromParent() end) end
+    end
+    return abandon
+end
+function Renderer:discard(abandon)
+    abandon=self:hide(abandon)
+    if self.mouse then
+        cleanup(self,function() self.mouse:dispose(abandon) end)
+        self.cleanupError=self.mouse.cleanupError or self.cleanupError
+    end
+    self.mouse,self.host,self.root,self.tree,self.controller=nil,nil,nil,nil,nil
+    self.controllerKey,self.worldKey=nil,nil
+    self.textPool,self.barPool,self.inputs,self.scrolls={},{},{},{}
+end
+function Renderer:isCurrent()
+    local controller=self.options.getController()
+    return valid(controller) and valid(self.host) and self.worldKey~=nil and identity(controller)==self.controllerKey and world(controller)==self.worldKey
 end
 function Renderer:viewport()
     if self.options.viewport then return self.options.viewport() end
@@ -85,12 +125,10 @@ end
 function Renderer:render(model)
     if not model then self:hide(); return true end
     local controller = self.options.getController()
-    if not valid(controller) then self:hide(); return nil, "local controller unavailable" end
+    if not valid(controller) or not world(controller) then self:discard(true); return nil, "local controller/world unavailable" end
     if (self.mouse and not self.mouse:isCurrent(controller)) or (self.controller and
         (identity(controller)~=self.controllerKey or world(controller)~=self.worldKey)) then
-        self:hide();if self.mouse then self.mouse:dispose();self.mouse=nil end
-        self.host, self.root, self.tree = nil, nil, nil
-        self.textPool, self.barPool = {}, {}
+        self:discard(true)
     end
     if model == self.lastModel and self.attached and valid(self.host) then return false end
     if not valid(self.host) then self:_create(controller) end
@@ -197,9 +235,11 @@ function Renderer:render(model)
     return true
 end
 function Renderer:input(id)
+    if not self.attached or not self:isCurrent() then return nil end
     local entry=self.inputs and self.inputs[id]
     if not entry or not valid(entry.widget) then return nil end
-    local value=entry.widget:GetText()
+    local read,value=pcall(function() return entry.widget:GetText() end)
+    if not read then self.inputError=tostring(value);return nil end
     if type(value)=='string' then return value end
     local ok,text=pcall(function() return value:ToString() end)
     return ok and text or nil

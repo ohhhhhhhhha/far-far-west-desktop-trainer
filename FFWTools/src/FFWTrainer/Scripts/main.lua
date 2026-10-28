@@ -33,7 +33,7 @@ local function protected(fn)
     if not ok then S.errors=S.errors+1;if S.lastError~=tostring(err) then S.lastError=tostring(err);log(err) end end
     return ok,err
 end
-S.limit=module('UpgradeLimit').new()
+S.limit=module('UpgradeLimit').new{getController=function() return Spawner.context().controller end}
 local settingsPath=directory..'/../Data/settings.json'
 local settings={unlimited=false,spawnMode='ground'}
 local saved=Bridge.readFile(settingsPath)
@@ -81,7 +81,12 @@ local function inputs()
         if target and entry and entry.resetKey==S.ui.inputRevision then S.ui:setTarget(target) end
     end
 end
-local function render() S.visible=S.ui.visible;S.renderer:render(S.ui:model()) end
+local function render()
+    S.visible=S.ui.visible;S.renderer:render(S.ui:model())
+    if S.renderer.cleanupError and S.renderer.cleanupError~=S.lastCleanupError then
+        S.lastCleanupError=S.renderer.cleanupError;log('view cleanup recovered: '..S.lastCleanupError)
+    end
+end
 local spawnPending=false
 function S.action(action,value)
     if not S.enabled then return end
@@ -113,11 +118,15 @@ end
 S.renderer=module('CanvasView').new{getController=function() return Spawner.context().controller end,
     layout=module('TrainerView').layout,onAction=S.action,zOrder=9960}
 function S.toggle(section)
-    ExecuteInGameThread(function() protected(function() inputs();L.refresh();S.ui:toggle(section);render() end) end)
+    if not S.enabled then return end
+    ExecuteInGameThread(function() protected(function()
+        if not S.enabled then return end
+        inputs();L.refresh();S.ui:toggle(section);render()
+    end) end)
 end
 function S.hide()
     if not S.visible then return end
-    ExecuteInGameThread(function() protected(function() S.ui.visible=false;render() end) end)
+    ExecuteInGameThread(function() protected(function() if not S.enabled then return end;S.ui.visible=false;render() end) end)
 end
 local lastTick=-math.huge
 function S.update()
@@ -125,7 +134,11 @@ function S.update()
     if restoreUnlimited then restoreUnlimited=false;S.limit:setEnabled(true) end
     inputs()
     local now=os.time()
-    if now~=lastTick then S.limit:tick();L.refresh();S.ui:refresh();lastTick=now end
+    if now~=lastTick then
+        S.limit:tick()
+        if S.visible then L.refresh();S.ui:refresh() end
+        lastTick=now
+    end
     if S.visible then render() end
 end
 function S.stop() S.enabled=false;S.ui.visible=false;S.visible=false;S.renderer:hide();S.limit:stop() end
@@ -135,9 +148,9 @@ bind('F4',function() S.toggle('jokers') end)
 bind('F1',function() S.action('apply') end)
 bind('F3',function() S.action('spawn') end)
 for _,entry in ipairs({{'F5',-1},{'F6',1}}) do bind(entry[1],function()
-    if S.visible then ExecuteInGameThread(function() protected(function() inputs();S.ui:move(entry[2]);render() end) end) end
+    if S.visible then ExecuteInGameThread(function() protected(function() if not S.enabled or not S.visible then return end;inputs();S.ui:move(entry[2]);render() end) end) end
 end) end
 bind('F7',S.hide);bind('F8',S.hide)
 LoopInGameThreadWithDelay(250,function() if S.enabled then protected(S.update) end end)
-log('in-game trainer 0.4.0-beta.4 loaded: F2 toolkit, F4 joker search, F1 apply, F3 spawn. Desktop commands are disabled.')
+log('in-game trainer 0.4.0-beta.5 loaded: F2 toolkit, F4 joker search, F1 apply, F3 spawn. Desktop commands are disabled.')
 return S

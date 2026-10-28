@@ -12,7 +12,8 @@ local function valid(o)
 end
 local function identity(o)
     if not valid(o) then return nil end
-    return o:GetFullName()..'@'..tostring(o:GetAddress())
+    local ok,key=pcall(function() return o:GetFullName()..'@'..tostring(o:GetAddress()) end)
+    return ok and key or nil
 end
 local function world(o)
     local ok,value=pcall(function() return o:GetWorld() end)
@@ -36,6 +37,12 @@ local function shared(key,value,write)
     if write then ModRef:SetSharedVariable(prefix..key,value)
     else return ModRef:GetSharedVariable(prefix..key) end
 end
+-- Lua cleanup errors (including stale reflected methods) must not strand
+-- routes/input ownership. This does not catch native access violations.
+local function cleanup(self,fn)
+    local ok,err=pcall(fn)
+    if not ok then self.cleanupError=tostring(err) end
+end
 local function color(r,g,b,a) return {R=r,G=g,B=b,A=a or 1} end
 local function install()
     local class=StaticFindObject(template)
@@ -50,6 +57,8 @@ local function install()
         -- delegate signature, and jumps straight to return (bytecode @1728).
         -- UE4SS OnClicked:Add requires UObject + existing UFunction, not Lua.
         local pre,post=RegisterHook(clickPath,function(context)
+            -- Already-dispatched callbacks can outlive the last released view.
+            if not next(routes) then return end
             local object=context:get();local route=routes[identity(object)]
             if not route then return end
             local owner,entry=route.owner,route.entry
@@ -88,7 +97,7 @@ function Panel:button(id,spec)
         assert(valid(button) and valid(label),'mouse control creation failed')
         button.IsFocusable=false
         host.WidgetTree.RootWidget=button
-        label:SetVisibility(3);label:SetAutoWrapText(true)
+        label:SetVisibility(3);label:SetAutoWrapText(false);label:SetTextOverflowPolicy(1)
         button:AddChild(label)
         local slot=self.options.root:AddChildToCanvas(host)
         entry={host=host,button=button,label=label,slot=slot,routeKey=identity(host)};self.buttons[id]=entry
@@ -111,9 +120,9 @@ function Panel:show(focus)
     if self.active then
         if not self:ownsInput() or not self:isCurrent(controller) then return end
         local menu=menuFor(controller)
-        if identity(menu)~=identity(self.menu) then
+        if identity(menu)~=self.menuKey then
             if valid(self.menu) then self.menu.isUiMode=self.priorUiMode or nativeMenuOpen(self.menu) end
-            self.menu=menu;self.priorUiMode=field(menu,'isUiMode')==true
+            self.menu=menu;self.menuKey=identity(menu);self.priorUiMode=field(menu,'isUiMode')==true
             shared('menu',identity(menu),true);shared('uiMode',self.priorUiMode,true)
         end
         if self.menu then self.menu.isUiMode=true end
@@ -132,6 +141,7 @@ function Panel:show(focus)
     if inherited then cursor=shared('cursor')==true end
     self.priorCursor=cursor
     self.menu=menuFor(controller)
+    self.menuKey=identity(self.menu)
     self.priorUiMode=field(self.menu,'isUiMode')==true
     if inherited and shared('menu')==identity(self.menu) then self.priorUiMode=shared('uiMode')==true end
     -- BP_Manager_Menu's tick recenters the mouse every 0.1s unless its own
@@ -149,7 +159,30 @@ function Panel:show(focus)
     self.options.library:SetInputMode_GameAndUIEx(controller,focus,0,false,false)
     for _,entry in pairs(self.buttons) do entry.host:SetVisibility(entry.visible and 4 or 2) end
 end
-function Panel:hide()
+function Panel:hide(abandon)
+    if abandon then
+        self.active=false
+        if self:ownsInput() then
+            -- A seamless transition may retain this PlayerController. Only a
+            -- fresh local lookup may release our single lock; old view/menu
+            -- references and replaced controllers are never touched.
+            local ok,current=pcall(function() return self.options.getController and self.options.getController() end)
+            if ok and identity(current)==self.controllerKey and world(current) then
+                local menu=menuFor(current);local sameMenu=identity(menu)==self.menuKey
+                local otherUi=nativeMenuOpen(menu);local keepUi=self.priorUiMode
+                if not sameMenu then keepUi=field(menu,'isUiMode')==true end
+                if sameMenu and valid(menu) then cleanup(self,function() menu.isUiMode=self.priorUiMode or otherUi end) end
+                if self.ownsLook then cleanup(self,function() current:SetIgnoreLookInput(false) end) end
+                cleanup(self,function()
+                    if keepUi or otherUi then self.options.library:SetFocusToGameViewport()
+                    else self.options.library:SetInputMode_GameOnly(current,false) end
+                end)
+                cleanup(self,function() current.bShowMouseCursor=self.priorCursor or otherUi or (not sameMenu and keepUi) end)
+            end
+            for _,key in ipairs({'owner','controller','cursor','menu','uiMode','lookLock'}) do shared(key,nil,true) end
+        end
+        return
+    end
     if self.active then
         self.active=false
         if self:ownsInput() then
@@ -164,29 +197,33 @@ function Panel:hide()
             if not sameMenu then keepUi=field(currentMenu,'isUiMode')==true end
             local otherUi=nativeMenuOpen(currentMenu)
             if valid(self.menu) and field(self.menu,'isUiMode')==true then
-                self.menu.isUiMode=self.priorUiMode or nativeMenuOpen(self.menu)
+                cleanup(self,function() self.menu.isUiMode=self.priorUiMode or nativeMenuOpen(self.menu) end)
             end
             if valid(controller) then
-                if self.ownsLook then controller:SetIgnoreLookInput(false) end
-                if keepUi or otherUi then self.options.library:SetFocusToGameViewport()
-                else self.options.library:SetInputMode_GameOnly(controller,false) end
-                controller.bShowMouseCursor=self.priorCursor or otherUi or (not sameMenu and keepUi)
+                if self.ownsLook then cleanup(self,function() controller:SetIgnoreLookInput(false) end) end
+                cleanup(self,function()
+                    if keepUi or otherUi then self.options.library:SetFocusToGameViewport()
+                    else self.options.library:SetInputMode_GameOnly(controller,false) end
+                end)
+                cleanup(self,function() controller.bShowMouseCursor=self.priorCursor or otherUi or (not sameMenu and keepUi) end)
             end
             shared('owner',nil,true);shared('controller',nil,true);shared('cursor',nil,true)
             shared('menu',nil,true);shared('uiMode',nil,true);shared('lookLock',nil,true)
         end
     end
-    for _,entry in pairs(self.buttons) do if valid(entry.host) then entry.host:SetVisibility(2) end end
+    for _,entry in pairs(self.buttons) do if valid(entry.host) then cleanup(self,function() entry.host:SetVisibility(2) end) end end
 end
-function Panel:dispose()
-    self:hide()
+function Panel:dispose(abandon)
+    self:hide(abandon)
     for _,entry in pairs(self.buttons) do
         routes[entry.routeKey]=nil
-        if valid(entry.button) and valid(entry.host) then entry.button.OnClicked:Remove(entry.host,clickName) end
-        if valid(entry.host) then entry.host:RemoveFromParent() end
+        if not abandon and valid(entry.button) and valid(entry.host) then cleanup(self,function() entry.button.OnClicked:Remove(entry.host,clickName) end) end
+        if not abandon and valid(entry.host) then cleanup(self,function() entry.host:RemoveFromParent() end) end
     end
     self.buttons={}
-    if not next(routes) and hook then
+    self.menu=nil
+    if abandon then self.options={} end
+    if not abandon and not next(routes) and hook then
         pcall(UnregisterHook,clickPath,hook.pre,hook.post);hook=nil
     end
 end

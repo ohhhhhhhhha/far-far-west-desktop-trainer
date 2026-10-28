@@ -23,12 +23,17 @@ local function valid(o)
 end
 local function integer(v) return type(v)=='number' and v>=0 and v<=2147483647 and v%1==0 end
 local function identity(o) return tostring(o:GetAddress()) end
-local function eligible(ui)
+local function eligible(ui,worldKey,controllerKey)
     if not valid(ui) then return false end
     local ok,result=pcall(function()
+        if worldKey then
+            local w=ui:GetWorld()
+            if not valid(w) or identity(w)~=worldKey then return false end
+        end
         if ui:GetFullName():find('Default__',1,true) then return false end
         local pc=ui:GetOwningPlayer()
         if not valid(pc) or pc:IsLocalPlayerController()~=true then return false end
+        if controllerKey and identity(pc)~=controllerKey then return false end
         local pawn=field(pc,'Pawn')
         return valid(pawn) and pawn:GetFullName():find('/L_Lobby.',1,true)~=nil
     end)
@@ -58,8 +63,27 @@ local function label(ui,text)
     assert(valid(widget),'Native upgrade label unavailable')
     widget:SetText(FText(text))
 end
-function U.new()
+function U.new(options)
+    options=options or {}
     local self={enabled=false,active=false,stopped=false,pending=false,hook=nil,records={},error=nil}
+    local function syncContext()
+        if not options.getController then return true end
+        local ok,key,wkey=pcall(function()
+            local pc=options.getController()
+            if not valid(pc) or pc:IsLocalPlayerController()~=true then return end
+            local pawn=field(pc,'Pawn')
+            if not valid(pawn) or not pawn:GetFullName():find('/L_Lobby.',1,true) then return end
+            local w=pc:GetWorld();if not valid(w) then return end
+            return identity(pc),identity(w)
+        end)
+        if not ok then self.error=tostring(key);key=nil end
+        if key~=self.controllerKey or wkey~=self.worldKey then
+            -- Never restore old labels/structs after leaving their world.
+            self.records={};self.active=false
+            self.controllerKey,self.worldKey=key,wkey
+        end
+        return key~=nil and wkey~=nil
+    end
     local function restore(record)
         local ui=record.ui
         if not valid(ui) then return true end
@@ -72,6 +96,7 @@ function U.new()
         return true
     end
     local function restoreAll()
+        if not syncContext() then self.records={};self.active=false;return true end
         local success=true
         for key,record in pairs(self.records) do
             local ok,err=pcall(restore,record)
@@ -81,7 +106,7 @@ function U.new()
         return success
     end
     local function patch(ui)
-        if not self.enabled or self.stopped or not self.hook or not eligible(ui) then return false end
+        if not self.enabled or self.stopped or not self.hook or not eligible(ui,self.worldKey,self.controllerKey) then return false end
         local total=spent(ui)
         local nativeMax=field(ui,'maxUpgradesAvailable')
         assert(integer(nativeMax),'Native upgrade maximum unavailable')
@@ -99,6 +124,7 @@ function U.new()
     end
     local function onRefresh(context)
         if not self.enabled or self.stopped then return end
+        if not syncContext() then return end
         local ok,result=pcall(patch,unwrap(context))
         if not ok then self.error=tostring(result)
         elseif result then self.active=true end
@@ -147,14 +173,12 @@ function U.new()
     function self:tick()
         if self.stopped then return end
         if not self.enabled then if next(self.records) then restoreAll() end;return end
+        if not syncContext() then return end
         scheduleHook()
         self.active=false
         if not self.hook then return end
         for key,record in pairs(self.records) do
-            if not eligible(record.ui) then
-                local ok,err=pcall(restore,record)
-                if ok then self.records[key]=nil else self.error=tostring(err) end
-            end
+            if not eligible(record.ui,self.worldKey,self.controllerKey) then self.records[key]=nil end
         end
         local ok,err=pcall(function()
             for _,ui in ipairs(FindAllOf('UI_Equipment_Item_C') or {}) do
