@@ -11,3 +11,5 @@ The existing GitHub workflow reads prepared release manifests on publish/* branc
 本仓库所有运行依赖都位于自身 Scripts 目录。控制器、布局、画布和鼠标输入分层，保存与刷卡入口保持明确操作边界。打包 API 按清单生成运行/源码 ZIP 与校验文件，不需要 GUI 编译，也不启动游戏或命令行。测试在独立仓库目录下执行，界面原生表现另行实测；不要纳入玩家 Data、存档、日志或个人路径。
 
 Follow [UE4SS’s Lua layout](https://docs.ue4ss.com/guides/creating-a-lua-mod.html). [UE5LuaModKit](https://github.com/qycnet/UE5LuaModKit) is an organizational reference, not the UE4SS API contract.
+
+For this candidate, verify.mjs exports runTrainerChecks({root,LuaFactory,wasmPath,sharedRoot,nexusRoot}). nexusRoot is the extracted Nexus player framework root containing ue4ss/. It mounts the unmodified UEHelpers.lua and UE4SS-settings.ini into the virtual test filesystem. Native UObject/save behavior is simulated. No framework files are overwritten by the content installer.

@@ -1,116 +1,121 @@
-# Installation and troubleshooting — 0.4.0-beta.5
-
-[简体中文](INSTALL.zh-CN.md)
+# Trainer installation, use and recovery — 0.4.0-beta.6
 
 ## Required downloads
 
-- **Framework:** [UE4SS for FarFarWest — Nexus mod 2](https://www.nexusmods.com/farfarwest/mods/2?tab=files), by anro / AnroG772. Select the player Main File **UE4SS-FarFarWest**, **3.0.1.1183 Frostburn, file 242**, not zDEV. Its archive is named UE4SS-FarFarWest-v3.0.1-1183-frostburn.zip.
-- **Trainer:** [FFWTrainer-0.4.0-beta.5.zip](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/download/v0.4.0-beta.5/FFWTrainer-0.4.0-beta.5.zip). The source ZIP is for development, not installation.
+1. **Framework:** [UE4SS for FarFarWest — Nexus mod 2](https://www.nexusmods.com/farfarwest/mods/2?tab=files), by anro / AnroG772. Select the player Main File **UE4SS-FarFarWest**, version **3.0.1.1183 / Frostburn**, file 242 (archive named UE4SS-FarFarWest-v3.0.1-1183-frostburn.zip). Do not select the zDEV developer package. Check the current page if the game or framework has since updated.
 
-**The beta.5 attachment is unchanged and contains older installation text and a separate signature. Follow this online guide: install only its FFWTrainer folder, and keep every signature/configuration file from the complete Nexus framework. Do not merge the whole GameRoot folder.**
+2. **Content mod:** download **FFWTrainer-0.4.0-beta.6.zip** from the Trainer release files. The source ZIP is for development and is not the install package.
 
-Use normal Windows extraction and copying. No terminal or batch file is needed. After a game update, check the Nexus framework page for compatibility instructions.
+Install the complete Nexus player package, including its game-specific signatures and configuration. [UE4SS](https://github.com/UE4SS-RE/RE-UE4SS) is the upstream source project.
 
-## 1. Back up and locate the folders
+## Back up your game save before installing or changing progress
 
-Fully exit the game. Paste `%LOCALAPPDATA%\FarFarWest\Saved\SaveGames` into the File Explorer address bar and copy the entire SaveGames folder to a dated backup outside the game directory. Keep the original in place. If no save exists yet, skip this backup until the game creates one. Separately back up existing mods' Data folders; mod settings and game saves are different. Keep these backups private.
+1. Fully exit the game. In File Explorer, paste `%LOCALAPPDATA%\FarFarWest\Saved\SaveGames` into the address bar and press Enter. This is a folder location, not a command to run.
 
-Steam → Far Far West → Manage → Browse local files opens the **game root**. Inside it, `FarFarWest/Binaries/Win64` is the **executable folder**, containing `FarFarWest-Win64-Shipping.exe`.
+2. Copy the entire **SaveGames** folder to a dated backup outside the game installation. Keep the original in place. If it does not exist yet, skip this backup until the game has created a save; do not create or download someone else's save.
 
-## 2. Install the complete Nexus framework
+3. Separately back up `ue4ss/Mods/FFWTrainer/Data` if already installed. Mod settings and game saves are different: backing up one does not back up the other. Keep both backups private.
 
-For a fresh installation, extract the Nexus framework into a temporary folder. Copy its **dwmapi.dll** and **ue4ss** folder into the executable folder. Verify:
+## Find the two different folders
 
-    <game root>/FarFarWest/Binaries/Win64/
-      FarFarWest-Win64-Shipping.exe
-      dwmapi.dll
-      ue4ss/UE4SS.dll
-      ue4ss/UE4SS-settings.ini
-      ue4ss/UE4SS_Signatures/
-      ue4ss/Mods/shared/UEHelpers/UEHelpers.lua
+Steam → Far Far West → Manage → Browse local files opens the **game root**. Inside it, FarFarWest/Binaries/Win64 is the **executable folder**, containing FarFarWest-Win64-Shipping.exe.
 
-Keep the Nexus package's DLL, settings, mod list and all included signatures together. Do not copy only the DLL or mix the package with generic UE4SS files.
+    <game root>/
+      FarFarWest/Binaries/Win64/
+        FarFarWest-Win64-Shipping.exe
+        dwmapi.dll
+        ue4ss/
+          UE4SS.dll
+          UE4SS-settings.ini
+          UE4SS_Signatures/
+          Mods/
 
-If migrating an older framework, first back up the complete old ue4ss folder and dwmapi.dll outside the game directory, including every mod's Data. Move the old framework into that backup, then install the complete Nexus package fresh. Restore compatible content mods one at a time and their matching Data. Do not restore old UE4SS.dll, UE4SS-settings.ini, Mods/mods.txt or UE4SS_Signatures over the new framework. Leave unrelated proxy files intact unless you have identified their owner.
+The framework ZIP starts with dwmapi.dll and ue4ss; extract these into **Win64**. The Trainer ZIP starts with **GameRoot**; copy everything *inside GameRoot* into the **game root**. Do not create an extra GameRoot folder or another FarFarWest folder inside Win64.
 
-Start the complete Nexus framework alone to confirm it reaches the title screen, then fully exit. If it fails, inspect the newly updated `ue4ss/UE4SS.log` before adding the Trainer. An existing working installation of this complete Nexus profile does not need reinstalling.
+## First installation
 
-## 3. Copy only the Trainer folder
+1. Fully exit the game and make the backups above. Extract downloads into separate temporary folders first.
 
-Extract the Trainer ZIP outside the game directory. Open this folder inside the extracted archive:
+2. Install the complete Nexus player framework into the executable folder. Keep its settings, mod list and all included signatures together. Do not overlay generic framework files or old custom signatures.
 
-    GameRoot/FarFarWest/Binaries/Win64/ue4ss/Mods/FFWTrainer/
+3. Start the game to confirm this complete framework reaches the title screen, then fully exit. Check a newly updated ue4ss/UE4SS.log if it fails. Do not install only the DLL without the package's signatures.
 
-Copy that **FFWTrainer** folder into:
+4. Copy the Trainer runtime's GameRoot contents into the game root. This package installs FFWTrainer under Mods and preserves the framework, settings, mod list and signatures.
 
-    <game root>/FarFarWest/Binaries/Win64/ue4ss/Mods/
-
-The final layout must be:
+5. Check the following path, then start the game and enter the saloon:
 
     <game root>/FarFarWest/Binaries/Win64/ue4ss/Mods/FFWTrainer/
       enabled.txt
       Scripts/main.lua
       Scripts/Progress.lua
-      Scripts/Spawner.lua
       Scripts/TrainerUI.lua
-      Data/  (may initially be empty)
+      Data/
 
-**Do not copy the archive's sibling UE4SS_Signatures directory or its ProcessLocalScriptFunction.lua. Preserve all Nexus signatures, UE4SS-settings.ini, Mods/mods.txt and framework DLLs.** Do not add an extra GameRoot or nested FFWTrainer folder.
+Data may initially be empty. Keep all Scripts files. Confirm enabled.txt is not accidentally named enabled.txt.txt with hidden Windows extensions.
 
-Keep every Scripts file. Retain existing Data/settings.json when updating. Check that enabled.txt is not accidentally named enabled.txt.txt. The card-information and combat-statistics mods are separate and are not required.
+## Migrating an old framework safely
 
-## 4. Start and use the Trainer
+Exit the game. Back up the entire old ue4ss folder and the existing dwmapi.dll **outside the game directory**, including each mod's Data. Move/rename the old framework into that backup before installing the complete Nexus package fresh. Do not follow a blanket deletion instruction that would discard mod data.
 
-Fully restart the game and enter the saloon. Returning to the title screen alone does not reload the mod; the Nexus profile disables automatic/hot reloading.
+Install current compatible content mods into the fresh framework and restore each mod's Data to its matching folder. Do not restore an old UE4SS.dll, UE4SS-settings.ini, Mods/mods.txt or signature directory over the Nexus package; old forced engine-version settings can defeat the new profile. Keep unrelated proxy files intact unless you have identified what owns them. Game saves are separate and must not be deleted for this migration.
 
-| Control | Action |
-| --- | --- |
-| F2 | Open/close the normal trainer |
-| F4 | Open/close Chinese/English Joker search |
-| F1 or Apply | Apply the selected permanent-progress target |
-| F3 or Joker action button | Use the chosen mode while the Joker page is open in a mission |
-| F5 / F6 | Previous/next entry |
-| Mouse | Select categories/entries, turn pages, enter values, scroll details |
+## Updating only the Trainer
 
-For permanent resources or levels, wait for your local character and save to load in the saloon. Select the exact entry and confirm its current value is readable. Enter the desired **total** as digits, such as 26; do not enter +1, 1,000 or 1e3. Apply once and read the result. Allow the game to save normally, then return to the title and re-enter the saloon or fully restart to verify persistence. A successful panel opening or in-memory value alone does not prove a disk save.
+With the game closed, back up Mods/FFWTrainer outside Mods. Replace its Scripts with the new runtime files and retain Data/settings.json and the enabled marker. Do not reinstall the framework if it is already working. Completely restart the game: returning to the title screen does not reload Lua, and the Nexus profile disables automatic/hot reload by default.
 
-Resources accept 0–9,999,999; character/weapon/magic-school levels accept 1–100. Magic levels represent Acid, Elec, Pyro, Voodoo, Cactus and Frost schools.
+## Open, apply and verify a saved value
 
-In Settings, choose **Drop on ground** or **Gain directly**. F3 uses that choice during a mission; leave at least two seconds between requests. Close the panel to collect dropped cards. Ground mode pauses at 10 nearby uncollected dropped Jokers within 20 metres. The total-point budget option lets you continue allocating points through the game's original equipment menu.
+- F2: normal trainer; F4: bilingual Joker search.
+- F1 or Apply: apply the selected permanent progress target.
+- F3: use the selected Joker mode while the Joker page is open in a mission.
+- F5/F6: previous/next item. Mouse: category, row and page selection, text entry and scrolling.
+- Settings: choose ground pickup or direct acquisition; F3 uses that choice. The total-point budget option still uses the game's original equipment menu.
+- F7/F8 hide the trainer when switching to those other optional panels. The framework also binds console keys; their existence is not proof that a Trainer action succeeded.
 
-## 5. Troubleshooting
+For resources/levels:
 
-### Game crashes on startup
+1. Return to the saloon and wait for the local character and save to load. The trainer edits your local persistent progress, not teammates' records.
 
-1. Exit the game. Disable only FFWTrainer as described below and restart once.
-2. If it now starts, leave Trainer disabled and report its version plus the relevant new log lines.
-3. If it still crashes, use the backup/migration procedure above to test a fresh, complete Nexus framework without restoring content mods or old global settings.
-4. If that framework-only setup also crashes, check the framework page against your installed game version and report the exact framework file/version and new log to its author. If it starts, exit fully and add compatible content mods back one at a time.
+2. Select the exact entry. The displayed value must be available and Apply enabled.
 
-Do not delete game saves as a crash remedy or repeatedly replace individual DLLs/signatures from different packages.
+3. On the first check after installation or a framework change, enter the displayed **current value unchanged** and click Apply/F1 once. An unchanged result checks the input/readiness/read-back path without changing that value or requesting a save. If it fails, use the diagnostic below before making an actual change.
 
-### F2/F4 do nothing or the mouse does not work
+4. After this check passes, click the target input, select its contents, enter the desired **total** as digits (for example 26, not +1, 1,000 or 1e3). Click Apply or press F1 once.
 
-Check the paths above, enabled marker and the modification time of:
+5. Read the result. “Verified …; the game save was requested” confirms runtime/native read-back and the save-object check; it does not by itself prove the disk write completed. An unchanged value makes no save request.
 
-    <game root>/FarFarWest/Binaries/Win64/ue4ss/UE4SS.log
+6. Let the game finish its normal save, then return to the title and re-enter the saloon or fully restart to check persistence. Do not repeatedly apply while a failure is unresolved.
 
-Look for a new FFWTrainer startup entry. If the framework logs but Trainer does not, check the folder and activation. Fully restart after updating; keep one FFWTrainer installation with its complete Scripts folder. If the mouse still fails, report whether the cursor cannot move or visible buttons cannot be clicked, and which other overlay/menu was open. F5/F6 remain available for entry navigation.
+Resources accept 0–9,999,999; character/weapon/magic-school levels accept 1–100. Ground/direct Jokers are mission effects, not the same operation as permanently changing a level.
 
-### F2 opens, but a value cannot be changed or does not stay saved
+## If the game crashes on startup
 
-Return to the saloon, wait for your own character and save to load, and check that the selected value is readable and Apply is available. Re-enter the desired total and record the **exact displayed message**. Do not assume an open panel means saving is available. If the application fails or the value reverts after reloading, stop repeated requests and provide the message plus relevant log lines.
+1. Fully exit the game and disable only FFWTrainer using the disable instructions below. Retest once. If it now starts, keep Trainer disabled and report the Trainer version and relevant new log lines. A successful framework-only launch does not prove that every Trainer operation works.
 
-Beta.5 does not include later diagnostic changes. If its error text still names an older framework build, report that text and the exact Nexus file you installed; do not replace the Nexus profile solely because an old message names another build.
+2. If it still crashes, follow the migration steps above to back up and move the old framework outside the game folder, then install the complete Nexus player package without restoring content mods or old global settings. Check whether this framework-only setup reaches the title screen. Do not repeatedly overwrite individual DLLs or signatures from different packages.
 
-For support, include Trainer/game/framework versions, saloon or mission state, host/client role, exact action and result. Redact personal paths/account identifiers from logs. Do not upload saves, Data folders or credentials. These installation changes do not establish that all reported crashes or saving failures are resolved.
+3. If the clean framework-only setup also crashes, check the framework page for the installed game version and report the exact framework file/version plus the new log to its author. If it starts, fully exit and add content mods back one at a time to identify which addition changes the result.
 
-## Updating, disabling and uninstalling
+The log is `<game root>/FarFarWest/Binaries/Win64/ue4ss/UE4SS.log`; check its modified time matches the failed launch. If no new log appears, first recheck the Win64 location and the complete framework files. Do not delete game saves as a startup-crash remedy.
 
-With the game closed, back up Mods/FFWTrainer outside Mods. To update beta.5, replace only that component's Scripts from the extracted FFWTrainer folder and keep Data/settings.json and enabled.txt. Do not merge GameRoot or reinstall a working Nexus framework.
+## If F2 opens but Apply does not work
 
-To disable, move FFWTrainer/enabled.txt outside its folder. If Mods/mods.txt also enables FFWTrainer, set only that entry to 0. Restore the marker/entry to re-enable. To uninstall, move only Mods/FFWTrainer into your backup; retain its Data and the shared Nexus framework/signatures. Restore the previous Trainer files and matching Data backup to roll back. Uninstalling does not undo progress already saved by the game.
+Opening a panel alone does not validate writes. Check the visible reason and the latest local UE4SS.log:
+
+- not_saloon: return to the saloon.
+- player_not_ready / not_local_player: wait for the local character; do not attempt to edit a remote player's progress.
+- save_object_unavailable / save_slot_unavailable / save_version_unavailable / runtime_version_mismatch / save_version_mismatch: the local save is not ready or its format is inconsistent. Do not bypass the check.
+- input_unavailable / input_not_synced: the target text was not safely read. Nothing was submitted; reopen the panel and re-enter it.
+- nativeRead / levelRead failure: the native inventory/XP interface failed before writing.
+- verification_failed / save_call_failed / save_object_not_updated: the message states whether a value changed or a save was requested. Stop repeating the action and provide the diagnostic.
+Logs identify the entry, stage and reason, without logging the entered target or save-slot identifier. Repeated identical input failures are deduplicated.
+
+For support, provide Trainer version, exact Nexus framework file/version, game version, saloon/mission state, local host/client role and the displayed reason. Redact personal paths/account identifiers from relevant logs. Do not upload saves, Data folders or credentials.
+
+## Disable, uninstall or roll back
+
+Exit the game. Move FFWTrainer/enabled.txt out of its folder; if Mods/mods.txt also enables FFWTrainer, set that entry to 0. To uninstall, move only Mods/FFWTrainer into your backup. Preserve Data and leave the Nexus framework/signatures for other mods. To roll back, restore the previous Trainer files and matching Data backup, then restart. Removing the trainer does not reverse progress already saved by the game.
 
 ## Compatibility and paths
 
-See the [framework compatibility guide](FFWTools/src/RuntimeCompatibility/README.en.md). If the log identifies Lua loading failures caused by a non-ASCII installation path, use Steam's storage UI to move the game to an ASCII-only library path. This guide does not require changing the Windows system locale.
+This guide uses the Nexus mod-2 player package, version 3.0.1.1183 Frostburn (file 242). After a game update, check that framework page for compatibility instructions before replacing files. If the log identifies a Lua loading error caused by a non-ASCII installation path, use Steam's storage UI to move the game to a library path containing only ASCII characters. A system-locale change is not required by this guide.

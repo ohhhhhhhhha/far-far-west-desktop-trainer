@@ -1,5 +1,5 @@
 {
-  "version": "0.4.0-beta.5",
+  "version": "0.4.0-beta.6",
   "channel": "beta",
   "game": "Far Far West",
   "dataBaseline": "0.3.0.7",
@@ -8,14 +8,15 @@
     "en"
   ],
   "platform": "Windows x64",
-  "ue4ssBuild": "1181",
-  "ue4ssSourceCommit": "8333063595fa3c49ad307f3b0f732accbb760d25",
-  "ue4ssDllSha256": "ce5e3c46a920cc00b2817ac61e438c9162830290379d0b5b9c4dfc2b29459290",
-  "runtimeValidation": "Unpublished candidate: 40 independent Lua test scripts pass with fresh shared fixture/Common mounts. Covers stale UMG cleanup, same/replaced-controller travel, deferred callbacks, relocated paths, DPI, cold host/font loading and native text overflow API. Real multiplayer and B07/B08 native crash attribution remain pending.",
+  "ue4ssBuild": "1183",
+  "ue4ssSourceCommit": "cdbc0b66cb2bb5b4a3d2f69b6e61a8460961e54c",
+  "ue4ssDllSha256": "c273e7228687b647226fd63d7ca65888d313ece6be18996ec1320d00a5efe1f8",
+  "runtimeValidation": "43/43 offline Lua test files passed. On the local Nexus file 242 / UE4SS 1183 setup, the user confirmed same-value Apply and gold +1 persisted after returning to the title and re-entering the saloon. Other level fields, computers and multiplayer roles were not certified by this check.",
   "framework": "UE4SS",
   "installation": "manual-copy",
   "id": "FFWTrainer",
-  "ue4ssVersion": "3.0.1-1181-g83330635",
-  "ue4ssDownloadUrl": "https://github.com/UE4SS-RE/RE-UE4SS/releases/download/experimental/UE4SS_v3.0.1-1181-g83330635.zip",
-  "ue4ssArchiveSha256": "b9a166a756605b21058a64cde93bcaab1a855dba3553e5c7e6ce0fa8fdfad7b9"
+  "ue4ssVersion": "3.0.1.1183 Frostburn",
+  "ue4ssDownloadUrl": "https://www.nexusmods.com/farfarwest/mods/2?tab=files",
+  "ue4ssArchiveSha256": "87c1d83576e43324c2310f8a7fd3961d71dcab07d75f4b1fbf3bb0c2c226b375",
+  "nexusFrameworkFileId": 242
 }

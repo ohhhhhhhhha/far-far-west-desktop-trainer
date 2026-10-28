@@ -1,7 +1,7 @@
 -- Runtime API guard runs before loading modules or registering native work.
 for _,api in ipairs({'RegisterKeyBind','ExecuteInGameThread','LoopInGameThreadWithDelay'}) do
     if type(_G[api])~='function' then
-        local message='Missing '..api..'. FFWTrainer requires the verified UE4SS v3.0.1-1181-g83330635 build; see INSTALL.en.md.'
+        local message='Missing '..api..'. Install the current Far Far West player framework from nexusmods.com/farfarwest/mods/2; see INSTALL.en.md.'
         print('[FFWTrainer] disabled: '..message..'\n')
         local disabled={enabled=false,compatibilityError=message};_G.FFWTrainer=disabled
         return disabled
@@ -72,26 +72,56 @@ S.ui=module('TrainerUI').new{read=Progress.read,inventory=function()
     return Inventory.readObjects(context.gameInstance,context.playerState,context.pawn)
 end,apply=Progress.apply,spawn=Spawner.spawn,
     canSpawn=Spawner.canSpawn,getUnlimited=function() return S.limit:status() end,setUnlimited=setUnlimited,setSpawnMode=setSpawnMode,spawnMode=settings.spawnMode}
-local function inputs()
-    if not S.ui.visible or not S.renderer.attached then return end
+local function inputs(requireTarget)
+    if not S.ui.visible or not S.renderer.attached then return false,'panel_unavailable' end
     local query=S.renderer:input('query');if query and S.ui.section~='settings' then S.ui:setQuery(query) end
     if S.ui.section~='jokers' and S.ui.section~='settings' then
-        local target=S.renderer:input('target')
+        local target,inputError=S.renderer:input('target')
         local entry=S.renderer.inputs and S.renderer.inputs.target
+        if target==nil and requireTarget then return false,'input_unavailable',inputError end
+        if (not entry or entry.resetKey~=S.ui.inputRevision) and requireTarget then return false,'input_not_synced' end
         if target and entry and entry.resetKey==S.ui.inputRevision then S.ui:setTarget(target) end
     end
+    return true
 end
 local function render()
     S.visible=S.ui.visible;S.renderer:render(S.ui:model())
+    if S.visible and S.ui.section~='jokers' and S.ui.section~='settings' then
+        local p=S.ui.progress
+        if p and p.canApply~=true and p.reasonCode then
+            local detail=p.error and tostring(p.error):gsub('^.-([%w_]+%.lua:%d+:)','%1') or ''
+            local key=p.reasonCode..detail
+            if key~=S.lastReadyLog then
+                S.lastReadyLog=key;log('progress readiness='..p.reasonCode)
+                if detail~='' then log('read detail: '..detail:sub(1,1000)) end
+            end
+        else S.lastReadyLog=nil end
+    end
     if S.renderer.cleanupError and S.renderer.cleanupError~=S.lastCleanupError then
         S.lastCleanupError=S.renderer.cleanupError;log('view cleanup recovered: '..S.lastCleanupError)
     end
+end
+local function recordApply(result)
+    S.lastApplyResult=result
+    local errorText=result.error and tostring(result.error):gsub('^.-([%w_]+%.lua:%d+:)','%1') or ''
+    local message='apply '..tostring(result.id or '')..' stage='..tostring(result.stage or 'done')..' result='..tostring(result.reasonCode or (result.success and 'ok' or 'failed'))
+    local key=message..errorText
+    if result.success or key~=S.lastApplyLog then
+        S.lastApplyLog=key;log(message)
+        if errorText~='' then log('apply detail: '..errorText:sub(1,1000)) end
+    end
+end
+local function rejectApply(stage,reason,errorText)
+    local result={id=S.ui.selectedId,success=false,stage=stage,reasonCode=reason,error=errorText}
+    S.ui.message={zh='未应用：['..reason..']，请重新打开面板后重试。',en='Not applied ['..reason..']; reopen the panel and retry.',success=false}
+    recordApply(result)
 end
 local spawnPending=false
 function S.action(action,value)
     if not S.enabled then return end
     local inputSource=S.renderer and S.renderer.mouse
     local spawning=action=='spawn'
+    local applying=action=='apply' and S.ui.visible and S.ui.section~='jokers' and S.ui.section~='settings'
     local selectedId=S.ui.selectedId
     local spawnMode=S.ui.spawnMode
     if spawning then
@@ -106,10 +136,16 @@ function S.action(action,value)
             -- Native clicks/key actions wait for the game thread. Revalidate
             -- their panel lease there, after any travel or overlay handoff.
             if inputSource and (inputSource~=S.renderer.mouse or not inputSource.active or not inputSource:ownsInput()
-                or not inputSource:isCurrent(S.renderer.options.getController())) then return end
-            inputs()
+                or not inputSource:isCurrent(S.renderer.options.getController())) then
+                if applying then rejectApply('dispatch','input_context_changed') end
+                return
+            end
+            local read,reason,inputError=inputs(applying)
+            if applying and not read then rejectApply('input',reason,inputError);render();return end
             if spawning and (S.ui.section~='jokers' or S.ui.selectedId~=selectedId or S.ui.spawnMode~=spawnMode) then return end
-            S.ui:action(action,value);render()
+            S.ui:action(action,value)
+            if applying and S.ui.lastApplyResult then recordApply(S.ui.lastApplyResult) end
+            render()
         end)
         if spawning then spawnPending=false end
     end) end)
@@ -152,5 +188,5 @@ for _,entry in ipairs({{'F5',-1},{'F6',1}}) do bind(entry[1],function()
 end) end
 bind('F7',S.hide);bind('F8',S.hide)
 LoopInGameThreadWithDelay(250,function() if S.enabled then protected(S.update) end end)
-log('in-game trainer 0.4.0-beta.5 loaded: F2 toolkit, F4 joker search, F1 apply, F3 spawn. Desktop commands are disabled.')
+log('in-game trainer 0.4.0-beta.6 loaded: F2 toolkit, F4 joker search, F1 apply, F3 spawn. Desktop commands are disabled.')
 return S

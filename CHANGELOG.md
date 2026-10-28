@@ -1,6 +1,15 @@
 # Changelog / 更新记录
 
-## 0.4.0-beta.5 — unpublished candidate
+## 0.4.0-beta.6 — 2026-10-29
+
+- Reject unreadable or stale target input instead of applying a previous value.
+- Report readiness, native-read, verification and save phases with clear reason codes and deduplicated local diagnostics.
+- Recommend Nexus mod 2/file 242; content archives preserve its DLL, configuration, mod list and three signatures.
+- Use the actual Nexus Helper/config profile in simulated host/client apply/save regressions. 43/43 offline test files passed. The user confirmed same-value Apply and a gold +1 change persisted after returning to the title and re-entering the saloon on the local Nexus 1183 setup.
+
+输入读取失败不再提交旧值；补齐从就绪到保存的原因提示。优先使用Nexus游戏专用框架，内容包不覆盖框架文件。43/43份离线测试通过；本机Nexus1183环境已由用户确认同值应用及金币+1回标题重进后保留。本次验收不涵盖全部等级字段、联机身份或所有电脑。
+
+## 0.4.0-beta.5 — 2026-10-29
 
 - Return before reading a delayed native callback context when all view routes have been released.
 

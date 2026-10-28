@@ -83,7 +83,13 @@ function Controller:action(action,value)
         if entries[(page-1)*8+1] then self:select(entries[(page-1)*8+1].id) end
     elseif action=='apply' and self.section~='jokers' and self.section~='settings' and self.selectedId then
         local ok,zh,detail=(self.options.apply or Progress.apply)(self.selectedId,self.target)
+        self.lastApplyResult={id=self.selectedId,success=ok==true}
+        if type(detail)=='table' then for k,v in pairs(detail)do self.lastApplyResult[k]=v end end
         self.message={zh=zh,en=type(detail)=='table' and detail.messageEn or detail,success=ok==true}
+        if not ok and self.lastApplyResult.reasonCode then
+            local suffix=' ['..tostring(self.lastApplyResult.stage or 'apply')..'/'..self.lastApplyResult.reasonCode..']'
+            self.message.zh=(self.message.zh or '')..suffix;self.message.en=(self.message.en or '')..suffix
+        end
         self:refresh()
     elseif action=='spawn' and self.section=='jokers' and self.selectedId then
         local ok,_,status=(self.options.spawn or Spawner.spawn)(self.selectedId,nil,nil,self.spawnMode)
@@ -127,6 +133,7 @@ function Controller:model()
         model.detail=L.choose('可设置范围：','Allowed range: ')..selected.min..'–'..selected.max..'\n\n'..
             (selected.type=='level' and L.choose('等级会换算为该等级的起始经验。','The level is converted to its starting XP.') or '')
         model.status=L.choose(self.progress.messageZh or '',self.progress.messageEn or '')
+        if not model.canApply and self.progress.reasonCode then model.status=model.status..' ['..self.progress.reasonCode..']' end
     end
     if self.message then
         model.message=self.message.spawn and Spawner.messageText(self.message.spawn) or L.choose(self.message.zh or '',self.message.en or '')

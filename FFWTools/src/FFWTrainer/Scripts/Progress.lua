@@ -139,27 +139,28 @@ end
 local function ready(c)
     local gi=c.gameInstance
     if not valid(gi) or not valid(c.controller) or not valid(c.pawn) then
-        return false,'本地角色尚未就绪。','The local player is not ready.'
+        return false,'本地角色尚未就绪。','The local player is not ready.','player_not_ready'
     end
     local ok,isLocal=pcall(function() return c.controller:IsLocalPlayerController() end)
-    if not ok or isLocal~=true then return false,'未找到本地玩家。','No local player was found.' end
+    if not ok or isLocal~=true then return false,'未找到本地玩家。','No local player was found.','not_local_player' end
     local location=name(c.pawn:GetFullName()) or ''
     -- GI.isGameTime becomes true after a startup delay, even in L_Lobby.
     -- The local pawn's actual world identifies the editable saloon scene.
     if not location:find('/L_Lobby.',1,true) then
-        return false,'请回到酒馆后修改永久进度。','Return to the saloon to edit persistent progress.'
+        return false,'请回到酒馆后修改永久进度。','Return to the saloon to edit persistent progress.','not_saloon'
     end
     local save=field(gi,'SG_PlayerProgress')
     local slot=name(field(gi,'PlayerId'))
     local required=field(gi,'requiredProgressVersion')
     local progress=field(gi,'playerProgress')
     local saved=field(save,'playerProgress')
-    if not valid(save) or not slot or slot=='' or not integer(required) or required<=0
-        or field(progress,F.version)~=required or field(saved,F.version)~=required then
-        return false,'玩家存档尚未完成加载。','The player save has not finished loading.'
-    end
-    if not field(gi,'F_ForceSave') then return false,'游戏保存接口不可用。','The game save function is unavailable.' end
-    return true,'在酒馆中可修改永久进度。','Persistent progress can be edited in the saloon.'
+    if not valid(save) then return false,'玩家存档对象尚未就绪。','The player save object is not ready.','save_object_unavailable' end
+    if not slot or slot=='' then return false,'本地存档标识尚未就绪。','The local save slot is not ready.','save_slot_unavailable' end
+    if not integer(required) or required<=0 then return false,'无法读取游戏存档版本。','The required save version is unavailable.','save_version_unavailable' end
+    if field(progress,F.version)~=required then return false,'当前进度版本尚未就绪。','The runtime progress version is not ready.','runtime_version_mismatch' end
+    if field(saved,F.version)~=required then return false,'存档对象版本尚未就绪。','The save object version is not ready.','save_version_mismatch' end
+    if not field(gi,'F_ForceSave') then return false,'游戏保存接口不可用。','The game save function is unavailable.','save_api_unavailable' end
+    return true,'在酒馆中可修改永久进度。','Persistent progress can be edited in the saloon.','ready'
 end
 function P.read(context)
     local s={available=false,canApply=false,values={}}
@@ -174,10 +175,10 @@ function P.read(context)
                 raw=raw,present=raw>0,exists=row~=nil}
         end
         s.available=true
-        s.canApply,s.messageZh,s.messageEn=ready(c)
+        s.canApply,s.messageZh,s.messageEn,s.reasonCode=ready(c)
     end)
     if not ok then
-        s.available=false;s.canApply=false;s.values={};s.error=tostring(err)
+        s.available=false;s.canApply=false;s.values={};s.error=tostring(err);s.reasonCode='read_failed'
         s.messageZh='进度暂时无法读取。';s.messageEn='Progress is currently unavailable.'
     end
     return s
@@ -224,28 +225,32 @@ end
 function P.apply(id,text,context)
     local value,zh,en=P.validate(id,text)
     local details={id=id,changed=false,saveRequested=false,savePrepared=false,persisted=false}
+    local stage='validate'
     local function result(success,cn,english)
-        details.messageZh=cn;details.messageEn=english
+        details.messageZh=cn;details.messageEn=english;details.stage=stage
         return success,cn,details
     end
-    if value==nil then return result(false,zh,en) end
+    if value==nil then details.reasonCode='invalid_input';return result(false,zh,en) end
     local entry=byId[id]
     local c,rows,index,found,old,lib,levels
-    local stage='prepare'
+    stage='ready'
     local ok,err=pcall(function()
         c=context or P.context()
-        local canApply,cn,english=ready(c)
-        if not canApply then zh=cn;en=english;return end
+        local canApply,cn,english,reason=ready(c)
+        if not canApply then zh=cn;en=english;details.reasonCode=reason;return end
+        stage='read'
         local progress=field(c.gameInstance,'playerProgress')
         rows,index=rowsFrom(progress)
         old,found=stored(index,entry.inventoryKey)
         assert(old>=0,'Selected progress amount is negative')
+        stage='nativeRead'
         lib=library(c,'playerDatas','/Game/Gamework/BPFL_PlayerDatas.BPFL_PlayerDatas_C')
         local observed,contains=nativeAmount(lib,c.gameInstance,entry.inventoryKey)
         assert(observed==old and contains==(old>0),'Native inventory getter disagrees with stored value')
         details.rawBefore=old;details.before=entry.type=='level' and P.levelForXp(old) or old
         details.rawAfter=entry.type=='level' and P.xpForLevel(value) or value
         if entry.type=='level' then
+            stage='levelRead'
             levels=library(c,'functionLibrary','/Game/Gamework/BPFL_FunctionLibrary.BPFL_FunctionLibrary_C')
             assert(nativeLevel(levels,c.gameInstance,old)==details.before,'Native level formula changed')
             assert(nativeLevel(levels,c.gameInstance,details.rawAfter)==value,'Native target level does not match')
@@ -276,6 +281,7 @@ function P.apply(id,text,context)
     end)
     if not ok then
         details.error=tostring(err);details.stage=stage
+        details.reasonCode=({read='read_failed',write='write_failed',verify='verification_failed',save='save_call_failed',verifySave='save_object_not_updated'})[stage] or 'native_call_failed'
         if stage=='save' then
             return result(false,'数值已修改，但游戏保存调用失败。','The value changed, but the game save call failed.')
         elseif stage=='verifySave' then
@@ -285,8 +291,9 @@ function P.apply(id,text,context)
         end
         return result(false,'无法读取或修改所选进度项目。','The selected progress entry could not be read or updated.')
     end
-    if stage=='prepare' then return result(false,zh,en) end
-    if stage=='unchanged' then return result(true,'当前数值已是 '..value..'，无需修改。','The current value is already '..value..'; no change was needed.') end
+    if stage=='ready' then return result(false,zh,en) end
+    if stage=='unchanged' then details.reasonCode='unchanged';return result(true,'当前数值已是 '..value..'，无需修改。','The current value is already '..value..'; no change was needed.') end
+    details.reasonCode='save_requested'
     return result(true,'已核实 '..details.before..' → '..details.after..'；已请求游戏保存。',
         'Verified '..details.before..' → '..details.after..'; the game save was requested.')
 end

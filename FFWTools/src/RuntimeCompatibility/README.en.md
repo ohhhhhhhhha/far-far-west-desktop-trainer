@@ -1,17 +1,17 @@
-# Far Far West — UE4SS compatibility and beta.5 installation
+# Far Far West — UE4SS compatibility
 
-Use the complete [Nexus UE4SS for FarFarWest player package (mod 2)](https://www.nexusmods.com/farfarwest/mods/2?tab=files): **UE4SS-FarFarWest 3.0.1.1183 Frostburn, file 242**, by anro / AnroG772. The package supplies the game-specific configuration and signatures. Install its dwmapi.dll and ue4ss folder beside FarFarWest-Win64-Shipping.exe under `<Steam game root>/FarFarWest/Binaries/Win64`.
+The current release is **FFWTrainer 0.4.0-beta.6**. Use the complete [Nexus UE4SS for FarFarWest player package (mod 2)](https://www.nexusmods.com/farfarwest/mods/2?tab=files): **UE4SS-FarFarWest 3.0.1.1183 Frostburn, file 242**, by anro / AnroG772.
 
-## Existing beta.5 attachment
+Install the framework's dwmapi.dll and ue4ss folder beside FarFarWest-Win64-Shipping.exe under `<Steam game root>/FarFarWest/Binaries/Win64`. Keep its configuration, mod list, DLLs and all signatures together.
 
-The frozen Trainer beta.5 archive contains a historical ProcessLocalScriptFunction.lua override and older instructions. **Do not install that override over the Nexus package.** Copy only `GameRoot/FarFarWest/Binaries/Win64/ue4ss/Mods/FFWTrainer` from the archive into `<Steam game root>/FarFarWest/Binaries/Win64/ue4ss/Mods/`.
+The beta.6 runtime ZIP installs only `ue4ss/Mods/FFWTrainer`. It does not include or overwrite framework signatures. Copy the contents of its GameRoot into the Steam game root as described in the [full installation guide](../../../INSTALL.en.md). Preserve mod Data and privately back up `%LOCALAPPDATA%\FarFarWest\Saved\SaveGames` with the game closed.
 
-Keep all Nexus signatures, UE4SS-settings.ini, Mods/mods.txt and framework DLLs unchanged. Preserve each mod's Data and back up game saves at `%LOCALAPPDATA%\FarFarWest\Saved\SaveGames` while the game is closed. The beta.5 attachment bytes remain unchanged; this online guide supersedes its old installation instructions.
+## Older beta.5 attachment
 
-See the [full installation, migration and troubleshooting guide](../../../INSTALL.en.md). Test the complete Nexus framework before adding content mods. A framework-only successful startup does not establish that every native mod operation or save is correct; follow the guide's apply/save verification and report exact failures.
+The archived beta.5 ZIP is unchanged and contains an old ProcessLocalScriptFunction.lua override. If installing that old release on the Nexus framework, copy only its `GameRoot/FarFarWest/Binaries/Win64/ue4ss/Mods/FFWTrainer` folder into `<game root>/FarFarWest/Binaries/Win64/ue4ss/Mods/`. Do not merge its whole GameRoot or copy its UE4SS_Signatures. The old override and license remain available in the beta.5 source history.
 
-## Historical source attribution
+## Verified scope
 
-The old override retained in this source tree came from [halu103/farfarwest-frostburn-modkit](https://github.com/halu103/farfarwest-frostburn-modkit/blob/main/config/ue4ss/UE4SS_Signatures/ProcessLocalScriptFunction.lua), under MIT. Its license is retained in [licenses/FrostburnModKit.txt](licenses/FrostburnModKit.txt). This attribution is not an instruction to install the old override.
+43/43 offline Lua test files passed. On the local Nexus 1183 setup, the user confirmed a same-value Apply check and a gold increase of 1 that remained after returning to the title and re-entering the saloon. This does not certify every level field, multiplayer role or computer.
 
-[UE4SS upstream project](https://github.com/UE4SS-RE/RE-UE4SS). Recheck the Nexus framework page after game updates; this guide does not promise compatibility with every game/framework revision.
+Recheck the Nexus page after game updates. [UE4SS upstream project](https://github.com/UE4SS-RE/RE-UE4SS).

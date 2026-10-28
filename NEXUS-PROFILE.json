@@ -1,0 +1,19 @@
+{
+  "page": "https://www.nexusmods.com/farfarwest/mods/2",
+  "fileId": 242,
+  "version": "3.0.1.1183",
+  "archiveSha256": "87c1d83576e43324c2310f8a7fd3961d71dcab07d75f4b1fbf3bb0c2c226b375",
+  "interfaceFiles": [
+    {
+      "file": "ue4ss/UE4SS-settings.ini",
+      "bytes": 9581,
+      "sha256": "2b08fe24e4be3423f78bbaa7d790cca23d27bceab6e1e43763fec68ad2a43995"
+    },
+    {
+      "file": "ue4ss/Mods/shared/UEHelpers/UEHelpers.lua",
+      "bytes": 10237,
+      "sha256": "7476f02eef0c87bfeab169f2ffe2e704363faeaae4bf9f1bda574b1e34f4a0e9"
+    }
+  ],
+  "interpretation": "Actual framework helper/config mounted; native UObject and save calls are simulated, not native DLL execution."
+}

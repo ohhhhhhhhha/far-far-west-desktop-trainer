@@ -235,13 +235,15 @@ function Renderer:render(model)
     return true
 end
 function Renderer:input(id)
-    if not self.attached or not self:isCurrent() then return nil end
+    if not self.attached or not self:isCurrent() then return nil,'view_not_current' end
     local entry=self.inputs and self.inputs[id]
-    if not entry or not valid(entry.widget) then return nil end
+    if not entry or not valid(entry.widget) then return nil,'input_widget_unavailable' end
     local read,value=pcall(function() return entry.widget:GetText() end)
-    if not read then self.inputError=tostring(value);return nil end
+    if not read then self.inputError=tostring(value);return nil,self.inputError end
     if type(value)=='string' then return value end
     local ok,text=pcall(function() return value:ToString() end)
-    return ok and text or nil
+    if ok and type(text)=='string' then return text end
+    self.inputError=ok and 'Input text conversion did not return a string' or tostring(text)
+    return nil,self.inputError
 end
 return Canvas
