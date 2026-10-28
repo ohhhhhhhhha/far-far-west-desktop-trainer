@@ -1,72 +1,51 @@
 # Far Far West — 游戏内修改器
 
-[English](README.md) · [下载](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/tag/v0.4.0-beta.5) · [问题反馈](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/issues)
+[English](README.md) · [下载 beta.5](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/tag/v0.4.0-beta.5) · [问题反馈](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/issues)
 
 **FFWTrainer · 0.4.0-beta.5 · UE4SS · Windows x64**
 
-按 **F2** 在游戏中唤出修改器。界面采用游戏字体、深色背景和黄铜色边框，支持鼠标选择、翻页、输入与详情滚动。显示语言跟随游戏，搜索同时接受中文和英文，英文不区分大小写。
+按 **F2** 在游戏内打开修改器。面板采用游戏字体、深色背景和黄铜色边框，支持鼠标选择、翻页、输入与详情滚动。显示语言跟随游戏，搜索同时接受中文和英文。
 
-- 金币、灵魂、蓝图，以及幽灵蜡烛、万圣节羽毛/南瓜/骷髅：0–9,999,999。
-- 角色、14 种武器、六种魔法流派等级：1–100。
-- 搜索 153 张普通奇术卡，在任务中生成地面拾取物或直接获得。
+- 金币、灵魂、蓝图、幽灵蜡烛和万圣节羽毛/南瓜/骷髅：0–9,999,999。
+- 角色、14 种武器和六种魔法流派等级：1–100。
+- 搜索 153 张普通奇术卡，在任务中选择地面生成或直接获得。
 - 解除总属性点额度，继续在原装备菜单加点；保留单项限制、金币费用及原生确认保存。
 
 ## 安装
 
-首次启动前必须先安装官方框架及运行包中的 ProcessLocalScriptFunction 游戏签名，按 INSTALL.zh-CN.md 操作。包内不覆盖官方 DLL、配置或 Mod 列表。
+使用 [Nexus 游戏专用 UE4SS（mod 2）](https://www.nexusmods.com/farfarwest/mods/2?tab=files)，选择玩家主文件 **UE4SS-FarFarWest，3.0.1.1183 Frostburn / 文件 242**。完整安装其配套签名和配置，选择玩家主文件，不选 zDEV 开发包。
 
+**现有 beta.5 ZIP 只复制 FFWTrainer 子文件夹。不要合并整个 GameRoot，也不要复制包内 UE4SS_Signatures。** 本在线指南替代冻结 beta.5 附件内的旧安装说明。
 
-请安装已验证的 [UE4SS v3.0.1-1181-g83330635](https://github.com/UE4SS-RE/RE-UE4SS/releases/download/experimental/UE4SS_v3.0.1-1181-g83330635.zip)。验证基线：Far Far West 0.3.0.7 / UE4SS build 1181。
+1. 完全退出游戏，私下备份 `%LOCALAPPDATA%\FarFarWest\Saved\SaveGames` 和各已安装 Mod 的 Data。
+2. Steam → 管理 → 浏览本地文件，打开游戏根目录。将完整 Nexus 框架安装到 `FarFarWest/Binaries/Win64`，与 `FarFarWest-Win64-Shipping.exe` 同级。
+3. 下载 [FFWTrainer-0.4.0-beta.5.zip](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/download/v0.4.0-beta.5/FFWTrainer-0.4.0-beta.5.zip)，解压到游戏目录之外。
+4. 在解压内容中打开 `GameRoot/FarFarWest/Binaries/Win64/ue4ss/Mods/FFWTrainer`，只将这个 **FFWTrainer** 文件夹复制到 `<游戏根目录>/FarFarWest/Binaries/Win64/ue4ss/Mods/`。
+5. 保留已有 FFWTrainer/Data，以及 Nexus 的 DLL、设置、Mod 列表和**全部**签名。完整重启，进入酒馆后按 F2。
 
-1. 先按[完整安装指南](INSTALL.zh-CN.md)安装并验证 UE4SS。
-2. 退出游戏，下载 [FFWTrainer-0.4.0-beta.5.zip](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/download/v0.4.0-beta.5/FFWTrainer-0.4.0-beta.5.zip)。
-3. 将 ZIP 解压到游戏目录之外的普通文件夹。
-4. 在 Steam → 管理 → 浏览本地文件打开游戏目录，将 GameRoot 内的内容复制进去。
-5. 启动游戏，按 F2。
-
-运行包只含游戏内 Lua 组件，无外置 EXE 和 .NET 要求，不需要命令行或安装脚本。旧桌面版更新方法见[安装、更新与卸载](INSTALL.zh-CN.md)。
+详见[完整安装、迁移与回滚指南](INSTALL.zh-CN.md)。不需要终端、批处理、外置 EXE 或 .NET。
 
 ## 操作
 
 | 操作 | 功能 |
 | --- | --- |
-| F2 | 打开 / 关闭常规修改器，从 F4 返回上次修改器分类 |
-| F4 | 打开 / 关闭奇术卡搜索页 |
+| F2 | 打开/关闭修改器，从 F4 返回上次分类 |
+| F4 | 打开/关闭中英奇术卡搜索 |
 | F1 或“应用” | 应用选中项目的目标数值 |
-| F3 或“生成一张” | 在刷卡页打开时按选中模式获得卡牌 |
-| F5 / F6 | 上一项 / 下一项 |
-| 鼠标 | 选择分类与项目、翻页、输入和滚动详情 |
+| F3 或刷卡按钮 | 在奇术卡页面按所选模式获得卡牌 |
+| F5 / F6 | 上一项/下一项 |
+| 鼠标 | 选择分类与条目、翻页、输入、滚动详情 |
 
-永久进度在酒馆修改。魔法等级指酸蚀、电击、火焰、巫毒、仙人掌、冰霜流派等级。刷卡在任务中进行，两次请求间隔至少 2 秒；关闭面板后正常拾取。浏览、搜索和刷新不会修改进度。
+永久进度在酒馆修改，先等自己的角色和存档加载完成。输入期望的**总量**，应用一次并阅读结果；等游戏保存，再重新加载核对。F2 能打开不等于写入成功。
 
-活动资源位于“资源”分类，在酒馆输入目标总量后应用。不会改动已经投入坩埚的材料；活动清理与兑换仍遵循游戏自身规则。
+在“设置”中选择**生成到地面**或**直接获得**，两种模式均在任务中用 F3 执行，请间隔至少两秒。地面模式在周围 20 米已有 10 张未拾取掉落卡时暂停，拾取后恢复。浏览和搜索不会修改进度。
 
-“设置”页控制总点数解限，开关保存在组件 Data/settings.json；关闭面板不会关闭开关。关闭开关恢复总额度检查，不清除已保存的加点。打开 F7/F8 会收起修改器，让其他面板使用鼠标。
+活动资源修改不改变已投入坩埚的材料，活动清理与兑换遵循游戏规则。总点数解限保存在 Data/settings.json；关闭开关恢复额度检查，不清除已保存加点。F7/F8 切换其他可选面板时会收起修改器。
 
-## 源码与验证
+## 反馈与源码
 
-源码位于 FFWTools/src/FFWTrainer/Scripts，所需依赖均已包含，可独立使用。本仓库不包含独立卡牌说明 Mod 或战斗统计。参见[开发说明](DEVELOPMENT.md)及[更新记录](CHANGELOG.md)。
+启动崩溃或 F2 能打开但无法应用时，先按[排障步骤](INSTALL.zh-CN.md)检查。反馈准确界面提示、修改器/游戏/框架版本、酒馆或任务位置以及房主/客机身份。相关日志先去掉个人路径和账号标识，不要上传存档、Data 或凭据。本次文档更新不代表所有崩溃或保存反馈均已解决。
 
-原进度保存、魔法流派等级和原菜单点数解限已由用户确认。上一版通过全部 31 份离线 Lua 测试。2026-10-28 用户确认：F2/F4 鼠标分类与翻页、短时间连续 F3 只生成一张、正常拾取，以及返回酒馆后继续使用修改器均正常。
+本仓库包含修改器及其 Lua 依赖；卡牌说明和战斗统计是独立 Mod。参见[开发说明](DEVELOPMENT.md)、[更新记录](CHANGELOG.md)及[框架兼容说明](FFWTools/src/RuntimeCompatibility/README.zh-CN.md)。
 
-## 0.4.0-beta.5 测试候选
-
-本候选处理旧 UMG 清理失效、跨世界视图废弃、停止后的延迟回调及旧输入框读取；装备解限菜单记录限定当前本地酒馆世界。已模拟主客机角色、安装路径与 DPI；真实联机验收和原生崩溃归因仍待验证。
-
-在“设置”中选择 **生成到地面**（默认）或 **直接获得**，选择会保存。F3 和原有操作按钮按所选模式执行，不新增按键。直接获得沿用原生卡牌获得流程，条件效果按游戏规则触发。
-
-本候选修复面板误用远端控制器、原生菜单晚加载或重置后失去鼠标的问题；周围 20 米内已有 10 张未拾取掉落卡时暂停刷取，拾取后恢复。初版的启动、鼠标与两种刷卡模式已由用户确认正常；后续输入交接修复已通过离线回归。评论中的启动和刷卡崩溃尚未独立复现。
-
-游戏线程最多保留一个待执行刷卡请求；等待期间更换卡牌会取消旧请求。失败调用仍占用两秒冷却，切图后的旧控制器按钮事件不再生效。
-
-原评论者的游戏进程崩溃尚未独立复现。若仍发生，请提供具体按钮、最后生成的卡牌、游戏和 UE4SS 版本，以及去掉个人信息后的日志。更新后需完全退出并重启游戏。
-
-## 反馈与许可
-
-在 [Issues](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/issues) 提供 Mod、游戏和 UE4SS 版本及复现步骤，请勿附存档、账号标识或个人路径。由 FFWTools contributors 维护。原创代码和文档采用 [MIT](LICENSE)，游戏文本与第三方依赖遵循[对应权利声明](THIRD-PARTY-NOTICES.md)。
-
-## Windows 路径编码范围
-
-已用 Node 在含空格、中文的目录实际解包，并在虚拟文件系统中验证 Lua 加载；这不等于已验证所有 Windows 系统代码页下的 narrow fopen。如果 UE4SS 无法打开非 ASCII 路径中的 Lua 文件，请通过 Steam 的存储管理界面将游戏移动到纯 ASCII 库路径后重试，不要修改系统区域设置或用 os.setlocale 全局绕过。
-
-首次打开时会在原生控件创建前加载宿主和 Font_Text 字体并检查库 CDO；按钮通过原生 TextOverflowPolicy setter 设置省略号。上述路径已使用最新共享边界夹具重新验证。
+原创代码和文档采用 [MIT](LICENSE)，游戏资料与依赖遵循[第三方声明](THIRD-PARTY-NOTICES.md)。[UE4SS](https://github.com/UE4SS-RE/RE-UE4SS)为上游框架项目。

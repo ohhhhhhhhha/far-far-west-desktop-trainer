@@ -1,19 +1,17 @@
-# Far Far West 的 UE4SS 启动签名
+# Far Far West — UE4SS 兼容与 beta.5 安装
 
-三个组件共用同一份 ProcessLocalScriptFunction.lua。运行包将它放在 `GameRoot/FarFarWest/Binaries/Win64/ue4ss/UE4SS_Signatures/`。安装时合并 GameRoot 内容，先安装这份游戏签名，再第一次启动 UE4SS；只装官方框架后直接启动可能命中错误的函数入口。
+使用完整的 [Nexus 游戏专用 UE4SS 玩家包（mod 2）](https://www.nexusmods.com/farfarwest/mods/2?tab=files)：**UE4SS-FarFarWest 3.0.1.1183 Frostburn，文件 242**，作者 anro / AnroG772。它提供配套游戏配置和签名。将其 dwmapi.dll 及 ue4ss 文件夹放在 `<Steam 游戏根目录>/FarFarWest/Binaries/Win64`，与 FarFarWest-Win64-Shipping.exe 同级。
 
-## 适用范围
+## 现有 beta.5 附件
 
-本次核验基线是 Far Far West 0.3.0.7、CL 2852、UE 5.8.1 的 Windows x64 版本。本机 UE4SS 1181（83330635）日志已确认此签名被加载。用户报告指出同类签名解决了 1183 的一次启动扫描复现；这不代表统计原生桥已验证 1183 的 ABI。
+冻结的 Trainer beta.5 压缩包包含旧 ProcessLocalScriptFunction.lua 覆盖签名和旧说明。**不要用该签名覆盖 Nexus 框架。** 仅将包内 `GameRoot/FarFarWest/Binaries/Win64/ue4ss/Mods/FFWTrainer` 复制到 `<Steam 游戏根目录>/FarFarWest/Binaries/Win64/ue4ss/Mods/`。
 
-签名按通配字节扫描，每次启动解析实际地址，不包含进程绝对地址、Steam ID、个人路径或机器配置。安装盘符、中文目录和地址随机化无需修改它。其他游戏更新仍需重新验证，不能保证任意版本兼容。
+完整保留 Nexus 的全部签名、UE4SS-settings.ini、Mods/mods.txt 及框架 DLL。保留每个 Mod 的 Data，并在游戏关闭时备份 `%LOCALAPPDATA%\FarFarWest\Saved\SaveGames`。beta.5 附件字节不变，本在线指南替代其旧安装说明。
 
-本目录不替换 UE4SS.dll、代理 DLL、UE4SS-settings.ini 或 mods.txt。不要把加载器故障、显卡崩溃和失效对象调用混为一种错误。本补丁不声称修复报告 B02、B07 或 B08。
+完整步骤见[安装、迁移与排障指南](../../../INSTALL.zh-CN.md)。先验证完整 Nexus 框架，再添加内容 Mod。框架能进入标题画面不代表所有原生 Mod 操作或保存均已成功；请按指南检查应用和重载后的数值，反馈准确错误。
 
-## 更新与回滚
+## 历史来源
 
-退出游戏，备份已有的同名签名文件，再复制新版。三个组件的签名字节必须一致；更新其中一个组件即可补齐。移除某个组件时不要删掉仍被其他组件使用的共享签名。
+源码目录保留的旧签名来自 [halu103/farfarwest-frostburn-modkit](https://github.com/halu103/farfarwest-frostburn-modkit/blob/main/config/ue4ss/UE4SS_Signatures/ProcessLocalScriptFunction.lua)，按 MIT 许可保留，授权见 [licenses/FrostburnModKit.txt](licenses/FrostburnModKit.txt)。来源说明不代表需要安装该旧签名。
 
-## 来源
-
-签名来自 [halu103/farfarwest-frostburn-modkit](https://github.com/halu103/farfarwest-frostburn-modkit/blob/main/config/ue4ss/UE4SS_Signatures/ProcessLocalScriptFunction.lua)，按 MIT 许可证分发，完整授权见 `licenses/FrostburnModKit.txt`。[UE4SS 官方签名接口说明](https://docs.ue4ss.com/dev/guides/fixing-compatibility-problems.html)。
+[UE4SS 上游项目](https://github.com/UE4SS-RE/RE-UE4SS)。游戏更新后重新查看 Nexus 框架页面，本指南不承诺兼容所有游戏或框架版本。
