@@ -1,0 +1,36 @@
+{
+  "tag": "v0.4.0-beta.4",
+  "targetCommit": "5cbb34a3722fd6800934db5ce9d10c9375100e07",
+  "title": "In-game Trainer 0.4.0-beta.4 / 游戏内修改器",
+  "body": "## Installation guide updated / 安装指南已更新\n\nDownload **FFWTrainer-0.4.0-beta.4-installation-update.zip** for the same mod with the expanded bilingual guide. [English installation guide](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/blob/main/INSTALL.en.md) · [中文安装指南](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/blob/main/INSTALL.zh-CN.md). It distinguishes the game root from the executable folder and explains UE4SS verification, updates and startup troubleshooting. The mod runtime files are unchanged.\n\n请下载 **FFWTrainer-0.4.0-beta.4-installation-update.zip**，内含同一版本 Mod 和完善的双语指南。指南说明 UE4SS 与修改器的不同安装目录、先验证框架、旧版更新和启动故障排查。游戏 Mod 文件未改变。\n\nChoose **Drop on ground** or **Gain directly** under Settings. F3 uses the selected mode without new key bindings. The direct mode uses the game's native Joker acquisition event.\n\nThis update improves local-controller mouse routing, input recovery and menu handoff. Ground spawning pauses when 10 uncollected dropped Jokers are within 20 metres. F1/F2/F4 and existing progression features remain available.\n\n**Tested UE4SS:** [v3.0.1-1181-g83330635, official experimental archive](https://github.com/UE4SS-RE/RE-UE4SS/releases/download/experimental/UE4SS_v3.0.1-1181-g83330635.zip). Install UE4SS separately; close the game, copy the contents of GameRoot into the game directory, keep Data/settings.json, then restart.\n\n在设置中选择生成到地面或直接获得，F3 按所选模式执行，不新增按键。改进鼠标输入恢复与切图交接；周围 20 米内已有 10 张未拾取掉落卡时暂停地面生成。\n\n已验证的框架：[UE4SS v3.0.1-1181-g83330635 官方下载](https://github.com/UE4SS-RE/RE-UE4SS/releases/download/experimental/UE4SS_v3.0.1-1181-g83330635.zip)。另行安装后，退出游戏，复制运行包 GameRoot 内的内容，保留 Data/settings.json，再重启。\n\nThe user confirmed initial beta.4 mouse navigation and both Joker modes; 34 offline test files and additional navigation tests passed. Follow-up handoff cases were tested offline. The original reporters' crashes have not been independently reproduced. The packages contain no personal data, saves or logs.",
+  "assets": [
+    {
+      "name": "FFWTrainer-0.4.0-beta.4-installation-update.zip",
+      "bytes": 167531,
+      "sha256": "ea63d6ef3cb6daa7945c644edec572200fa002c8444b61a7e44c78a6f77272d7",
+      "contentType": "application/zip",
+      "blob": "6fce3c93f4fb28ae0d582b86c61effb5634f0047"
+    },
+    {
+      "name": "FFWTrainer-source-0.4.0-beta.4-installation-update.zip",
+      "bytes": 241311,
+      "sha256": "c52a1439d765455b2cd345d8483b770ab65b57361418c9df99dcd19e66cf557c",
+      "contentType": "application/zip",
+      "blob": "6bc23c1a4e89927b0ac85febc3e21edab25e7a7e"
+    },
+    {
+      "name": "SHA256SUMS-installation-update.txt",
+      "bytes": 235,
+      "sha256": "120a675e10f60a5ee93a4b990ed6cd292b86c9def155f15d248c91221944ad53",
+      "contentType": "text/plain",
+      "blob": "776961937af2a21c0083a9c2226531abe82ce3b2"
+    },
+    {
+      "name": "release-manifest-installation-update.json",
+      "bytes": 564,
+      "sha256": "10039931716df1939da1719d974a5b39c373e14d7908e4b70b11896778226bff",
+      "contentType": "application/json",
+      "blob": "14441d65d75b5c952ced35228727d05bb04a44c7"
+    }
+  ]
+}

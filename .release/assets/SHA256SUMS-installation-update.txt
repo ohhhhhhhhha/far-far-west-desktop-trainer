@@ -1,0 +1,2 @@
+ea63d6ef3cb6daa7945c644edec572200fa002c8444b61a7e44c78a6f77272d7  FFWTrainer-0.4.0-beta.4-installation-update.zip
+c52a1439d765455b2cd345d8483b770ab65b57361418c9df99dcd19e66cf557c  FFWTrainer-source-0.4.0-beta.4-installation-update.zip

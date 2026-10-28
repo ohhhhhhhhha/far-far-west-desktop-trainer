@@ -1,0 +1,19 @@
+{
+  "id": "FFWTrainer",
+  "version": "0.4.0-beta.4",
+  "update": "installation-guide",
+  "artifacts": [
+    {
+      "name": "FFWTrainer-0.4.0-beta.4-installation-update.zip",
+      "sha256": "ea63d6ef3cb6daa7945c644edec572200fa002c8444b61a7e44c78a6f77272d7",
+      "bytes": 167531,
+      "contentType": "application/zip"
+    },
+    {
+      "name": "FFWTrainer-source-0.4.0-beta.4-installation-update.zip",
+      "sha256": "c52a1439d765455b2cd345d8483b770ab65b57361418c9df99dcd19e66cf557c",
+      "bytes": 241311,
+      "contentType": "application/zip"
+    }
+  ]
+}
