@@ -15,10 +15,11 @@
 
 请安装已验证的 [UE4SS v3.0.1-1181-g83330635](https://github.com/UE4SS-RE/RE-UE4SS/releases/download/experimental/UE4SS_v3.0.1-1181-g83330635.zip)。验证基线：Far Far West 0.3.0.7 / UE4SS build 1181。
 
-1. 退出游戏，下载 [FFWTrainer-0.4.0-beta.4.zip](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/download/v0.4.0-beta.4/FFWTrainer-0.4.0-beta.4.zip)。
-2. 将 ZIP 解压到游戏目录之外的普通文件夹。
-3. 在 Steam → 管理 → 浏览本地文件打开游戏目录，将 GameRoot 内的内容复制进去。
-4. 启动游戏，按 F2。
+1. 先按[完整安装指南](INSTALL.zh-CN.md)安装并验证 UE4SS。
+2. 退出游戏，下载 [FFWTrainer-0.4.0-beta.4-installation-update.zip](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/download/v0.4.0-beta.4/FFWTrainer-0.4.0-beta.4-installation-update.zip)。
+3. 将 ZIP 解压到游戏目录之外的普通文件夹。
+4. 在 Steam → 管理 → 浏览本地文件打开游戏目录，将 GameRoot 内的内容复制进去。
+5. 启动游戏，按 F2。
 
 运行包只含游戏内 Lua 组件，无外置 EXE 和 .NET 要求，不需要命令行或安装脚本。旧桌面版更新方法见[安装、更新与卸载](INSTALL.zh-CN.md)。
 

@@ -15,10 +15,11 @@ Press **F2** to open the trainer inside the game. The panel uses the game font, 
 
 Requires the verified [UE4SS v3.0.1-1181-g83330635 package](https://github.com/UE4SS-RE/RE-UE4SS/releases/download/experimental/UE4SS_v3.0.1-1181-g83330635.zip). Baseline: Far Far West 0.3.0.7 / UE4SS build 1181.
 
-1. Close the game and download [FFWTrainer-0.4.0-beta.4.zip](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/download/v0.4.0-beta.4/FFWTrainer-0.4.0-beta.4.zip).
-2. Extract the ZIP outside the game folder.
-3. Copy the contents of GameRoot into the game directory opened through Steam → Manage → Browse local files.
-4. Start the game and press F2.
+1. First install and verify UE4SS using the [complete installation guide](INSTALL.en.md).
+2. Close the game and download [FFWTrainer-0.4.0-beta.4-installation-update.zip](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/download/v0.4.0-beta.4/FFWTrainer-0.4.0-beta.4-installation-update.zip).
+3. Extract the ZIP outside the game folder.
+4. Copy the contents of GameRoot into the game directory opened through Steam → Manage → Browse local files.
+5. Start the game and press F2.
 
 The runtime package contains the Lua mod, without a desktop executable or .NET requirement. Installation needs no terminal or scripts. See [update and removal instructions](INSTALL.en.md) when replacing the old desktop release.
 
