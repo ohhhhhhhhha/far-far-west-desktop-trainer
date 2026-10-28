@@ -1,0 +1,36 @@
+{
+  "tag": "v0.4.0-beta.6",
+  "targetCommit": "a59b5b00721a31df0e9c329bb6c5b25d065df83c",
+  "title": "In-game Trainer 0.4.0-beta.6 / Nexus framework and Apply diagnostics",
+  "body": "## 0.4.0-beta.6\n\nFixes an unreadable/stale target input being replaced with an old cached value. Apply now stops when the target cannot be read. The panel reports readiness, native-read, verification and save-stage failures with clearer diagnostics. Existing saloon/local-save checks remain in place.\n\n**Framework dependency:** [UE4SS for FarFarWest — Nexus mod 2](https://www.nexusmods.com/farfarwest/mods/2?tab=files), player Main File **UE4SS-FarFarWest 3.0.1.1183 Frostburn, file 242**, by anro / AnroG772. Use the complete player package, including all its configuration and signatures; choose the player Main File rather than zDEV.\n\n**Installation:** fully exit the game and privately back up **%LOCALAPPDATA%\\FarFarWest\\Saved\\SaveGames** and existing mod Data. Install the complete Nexus framework beside FarFarWest-Win64-Shipping.exe at **<Steam game root>/FarFarWest/Binaries/Win64**. Extract **FFWTrainer-0.4.0-beta.6.zip** and copy the contents of **GameRoot** into the Steam game root. This beta.6 package installs only Mods/FFWTrainer and does not overwrite framework DLLs, configuration, mod lists or signatures. Preserve existing Data and fully restart.\n\n[Full English install / upgrade / troubleshooting guide](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/blob/main/INSTALL.en.md) · [中文安装指南](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/blob/main/INSTALL.zh-CN.md)\n\n**Verified scope:** 43/43 offline Lua test files passed. On the local Nexus 1183 setup, the user confirmed same-value Apply and a gold increase of 1 that persisted after returning to the title and re-entering the saloon. This does not certify every level field, multiplayer role or computer, or establish the cause of every earlier crash report.\n\nBoth ground-pickup and direct Joker modes, Halloween resources, magic levels and the native-menu total-point option remain available. No additional hotkeys were introduced.\n\n---\n\n目标输入读取失败或已过期时，不再提交缓存的旧数值；应用会停止并显示原因。补充就绪条件、原生读取、校验和保存阶段提示，保留酒馆及本人存档检查。\n\n**框架依赖：** 使用上方 **Nexus mod 2 / 文件 242，UE4SS-FarFarWest 3.0.1.1183 Frostburn 玩家主文件**，完整保留配套配置和全部签名，不选 zDEV。\n\n安装前完整退出游戏，私下备份 **%LOCALAPPDATA%\\FarFarWest\\Saved\\SaveGames** 及已有 Mod Data。完整 Nexus 框架放入 **<Steam 游戏根目录>/FarFarWest/Binaries/Win64**。将 **beta.6** 运行 ZIP 的 **GameRoot 内部内容**复制到游戏根目录；本版只安装 Mods/FFWTrainer，不覆盖框架 DLL、配置、Mod 列表或签名。保留原 Data，更新后完整重启。\n\n43/43 份离线 Lua 测试通过。本机 Nexus 1183 环境已由用户确认：同值应用通过，金币增加 1 后回标题重新进入酒馆仍保留。本次验收不涵盖全部等级字段、所有联机身份或每台电脑，也不代表所有旧崩溃反馈已完成归因。保留两种刷卡模式、活动资源、魔法等级和原菜单总点数解限，不新增按键。\n\n旧版本附件保持不变。归档 beta.5 若用于 Nexus 框架，只复制其 Mods/FFWTrainer 子目录，不复制其旧签名；详见仓库兼容指南。附件不含玩家存档、Data 内容、日志或个人路径。\n",
+  "assets": [
+    {
+      "name": "FFWTrainer-0.4.0-beta.6.zip",
+      "bytes": 171902,
+      "sha256": "e5300d4d45908f02cd42ce38e287c27d5a76f22ad8cf0ab41994666a2e5f797a",
+      "blob": "f1418e728cf1ce17b8bcb400138a023401b1de42",
+      "contentType": "application/zip"
+    },
+    {
+      "name": "FFWTrainer-source-0.4.0-beta.6.zip",
+      "bytes": 266566,
+      "sha256": "8c2932edd4aead1c90837d8bf47c40794ce9b88aa5b7116fc8bb4aa0b2decc8d",
+      "blob": "34804a89efe681c925ad64bc0e3de9c21de50672",
+      "contentType": "application/zip"
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "bytes": 195,
+      "sha256": "9348cff3793895a0d9faafc35e0b8be98efb848452db636bede92589c770cb1e",
+      "blob": "ce628b9964e3727717d0ce55a114a000cc476ad2",
+      "contentType": "text/plain"
+    },
+    {
+      "name": "release-manifest.json",
+      "bytes": 516,
+      "sha256": "e93114dad7ed7151f1e565e14a61c6eddeb2b7ea1e542e399ff2b9a5e3d1a6bc",
+      "blob": "c105d7931d5262a8b809f0c32b5f23b2007a294e",
+      "contentType": "application/json"
+    }
+  ]
+}
