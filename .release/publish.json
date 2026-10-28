@@ -1,0 +1,36 @@
+{
+  "tag": "v0.4.0-beta.4",
+  "targetCommit": "6129effd5ca378d5d293e234a50e417ebd93182c",
+  "title": "In-game Trainer 0.4.0-beta.4 / 游戏内修改器",
+  "body": "Choose **Drop on ground** or **Gain directly** under Settings. F3 uses the selected mode without new key bindings. The direct mode uses the game's native Joker acquisition event.\n\nThis update improves local-controller mouse routing, input recovery and menu handoff. Ground spawning pauses when 10 uncollected dropped Jokers are within 20 metres. F1/F2/F4 and existing progression features remain available.\n\n**Tested UE4SS:** [v3.0.1-1181-g83330635, official experimental archive](https://github.com/UE4SS-RE/RE-UE4SS/releases/download/experimental/UE4SS_v3.0.1-1181-g83330635.zip). Install UE4SS separately; close the game, copy the contents of GameRoot into the game directory, keep Data/settings.json, then restart.\n\n在设置中选择生成到地面或直接获得，F3 按所选模式执行，不新增按键。改进鼠标输入恢复与切图交接；周围 20 米内已有 10 张未拾取掉落卡时暂停地面生成。\n\n已验证的框架：[UE4SS v3.0.1-1181-g83330635 官方下载](https://github.com/UE4SS-RE/RE-UE4SS/releases/download/experimental/UE4SS_v3.0.1-1181-g83330635.zip)。另行安装后，退出游戏，复制运行包 GameRoot 内的内容，保留 Data/settings.json，再重启。\n\nThe user confirmed initial beta.4 mouse navigation and both Joker modes; 34 offline test files and additional navigation tests passed. Follow-up handoff cases were tested offline. The original reporters' crashes have not been independently reproduced. The packages contain no personal data, saves or logs.",
+  "assets": [
+    {
+      "name": "FFWTrainer-0.4.0-beta.4.zip",
+      "bytes": 166107,
+      "sha256": "cd1ad9509069a6c0f0819e1a46f64cbc8e9b6a727813beb871bb7f77ff2cdc08",
+      "contentType": "application/zip",
+      "blob": "3ae8e7c6080f96d870a73825587718ae75047a8e"
+    },
+    {
+      "name": "FFWTrainer-source-0.4.0-beta.4.zip",
+      "bytes": 239887,
+      "sha256": "d662f9e8a998fc1f45fca8622464196de70655100ea6716d00c49a28204c01bf",
+      "contentType": "application/zip",
+      "blob": "015555558e1f30f657edf63eb4a60bbc9b548cda"
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "bytes": 195,
+      "sha256": "b43283c3be69661050b4df157f32443dd25ea56981dcdbc7452f9a15d495f899",
+      "contentType": "text/plain",
+      "blob": "a825dae7cc392aac47f152f1ec6d58c54e334590"
+    },
+    {
+      "name": "release-manifest.json",
+      "bytes": 516,
+      "sha256": "678ea8388a7497772d0b504906c2a98993636f3d3a874e64c1d8979f0b58a428",
+      "contentType": "application/json",
+      "blob": "f5d471de5238ecdddb8ea6e6916ed1e0687174b0"
+    }
+  ]
+}
