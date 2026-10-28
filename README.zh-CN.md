@@ -1,8 +1,8 @@
 # Far Far West — 游戏内修改器
 
-[English](README.md) · [下载](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/tag/v0.4.0-beta.4) · [问题反馈](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/issues)
+[English](README.md) · [下载](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/tag/v0.4.0-beta.5) · [问题反馈](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/issues)
 
-**FFWTrainer · 0.4.0-beta.4 · UE4SS · Windows x64**
+**FFWTrainer · 0.4.0-beta.5 · UE4SS · Windows x64**
 
 按 **F2** 在游戏中唤出修改器。界面采用游戏字体、深色背景和黄铜色边框，支持鼠标选择、翻页、输入与详情滚动。显示语言跟随游戏，搜索同时接受中文和英文，英文不区分大小写。
 
@@ -13,10 +13,13 @@
 
 ## 安装
 
+首次启动前必须先安装官方框架及运行包中的 ProcessLocalScriptFunction 游戏签名，按 INSTALL.zh-CN.md 操作。包内不覆盖官方 DLL、配置或 Mod 列表。
+
+
 请安装已验证的 [UE4SS v3.0.1-1181-g83330635](https://github.com/UE4SS-RE/RE-UE4SS/releases/download/experimental/UE4SS_v3.0.1-1181-g83330635.zip)。验证基线：Far Far West 0.3.0.7 / UE4SS build 1181。
 
 1. 先按[完整安装指南](INSTALL.zh-CN.md)安装并验证 UE4SS。
-2. 退出游戏，下载 [FFWTrainer-0.4.0-beta.4-installation-update.zip](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/download/v0.4.0-beta.4/FFWTrainer-0.4.0-beta.4-installation-update.zip)。
+2. 退出游戏，下载 [FFWTrainer-0.4.0-beta.5.zip](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/download/v0.4.0-beta.5/FFWTrainer-0.4.0-beta.5.zip)。
 3. 将 ZIP 解压到游戏目录之外的普通文件夹。
 4. 在 Steam → 管理 → 浏览本地文件打开游戏目录，将 GameRoot 内的内容复制进去。
 5. 启动游戏，按 F2。
@@ -46,7 +49,9 @@
 
 原进度保存、魔法流派等级和原菜单点数解限已由用户确认。上一版通过全部 31 份离线 Lua 测试。2026-10-28 用户确认：F2/F4 鼠标分类与翻页、短时间连续 F3 只生成一张、正常拾取，以及返回酒馆后继续使用修改器均正常。
 
-## 0.4.0-beta.4 测试候选
+## 0.4.0-beta.5 测试候选
+
+本候选处理旧 UMG 清理失效、跨世界视图废弃、停止后的延迟回调及旧输入框读取；装备解限菜单记录限定当前本地酒馆世界。已模拟主客机角色、安装路径与 DPI；真实联机验收和原生崩溃归因仍待验证。
 
 在“设置”中选择 **生成到地面**（默认）或 **直接获得**，选择会保存。F3 和原有操作按钮按所选模式执行，不新增按键。直接获得沿用原生卡牌获得流程，条件效果按游戏规则触发。
 
@@ -59,3 +64,9 @@
 ## 反馈与许可
 
 在 [Issues](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/issues) 提供 Mod、游戏和 UE4SS 版本及复现步骤，请勿附存档、账号标识或个人路径。由 FFWTools contributors 维护。原创代码和文档采用 [MIT](LICENSE)，游戏文本与第三方依赖遵循[对应权利声明](THIRD-PARTY-NOTICES.md)。
+
+## Windows 路径编码范围
+
+已用 Node 在含空格、中文的目录实际解包，并在虚拟文件系统中验证 Lua 加载；这不等于已验证所有 Windows 系统代码页下的 narrow fopen。如果 UE4SS 无法打开非 ASCII 路径中的 Lua 文件，请通过 Steam 的存储管理界面将游戏移动到纯 ASCII 库路径后重试，不要修改系统区域设置或用 os.setlocale 全局绕过。
+
+首次打开时会在原生控件创建前加载宿主和 Font_Text 字体并检查库 CDO；按钮通过原生 TextOverflowPolicy setter 设置省略号。上述路径已使用最新共享边界夹具重新验证。

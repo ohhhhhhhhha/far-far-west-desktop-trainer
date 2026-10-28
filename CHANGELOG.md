@@ -1,5 +1,19 @@
 # Changelog / 更新记录
 
+## 0.4.0-beta.5 — unpublished candidate
+
+- Return before reading a delayed native callback context when all view routes have been released.
+
+- Load host/font assets before the first native widget factory call, and validate the widget library CDO.
+- Use SetTextOverflowPolicy(Ellipsis) for button captions.
+
+- Recover from stale UMG cleanup methods and release Lua click routes.
+- Discard old views across world/controller loss and skip stale edit-box reads.
+- Cancel queued toggles/navigation after stop; avoid closed-panel language polling.
+- Scope upgrade menu caches to the current local saloon world.
+- Include the coordinated game startup signature and license; install it before first launch.
+- Preserve both Joker modes, pickup pile guard and all currencies. B07/B08 native access violations are not claimed fixed.
+
 ## 0.4.0-beta.4 — 2026-10-28
 
 - Recheck input ownership on the game thread so queued clicks cannot act after travel or another overlay takes input.

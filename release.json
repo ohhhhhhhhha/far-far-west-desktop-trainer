@@ -1,5 +1,5 @@
 {
-  "version": "0.4.0-beta.4",
+  "version": "0.4.0-beta.5",
   "channel": "beta",
   "game": "Far Far West",
   "dataBaseline": "0.3.0.7",
@@ -11,7 +11,7 @@
   "ue4ssBuild": "1181",
   "ue4ssSourceCommit": "8333063595fa3c49ad307f3b0f732accbb760d25",
   "ue4ssDllSha256": "ce5e3c46a920cc00b2817ac61e438c9162830290379d0b5b9c4dfc2b29459290",
-  "runtimeValidation": "All 34 offline Lua test files pass. The user confirmed initial beta.4 startup, mouse navigation and both Joker modes. Follow-up mouse review fixes queued input after travel/overlay handoff and closing after pawn/menu replacement; these specific cases have offline regression coverage. Original reporter crashes have not been independently reproduced.",
+  "runtimeValidation": "Unpublished candidate: 40 independent Lua test scripts pass with fresh shared fixture/Common mounts. Covers stale UMG cleanup, same/replaced-controller travel, deferred callbacks, relocated paths, DPI, cold host/font loading and native text overflow API. Real multiplayer and B07/B08 native crash attribution remain pending.",
   "framework": "UE4SS",
   "installation": "manual-copy",
   "id": "FFWTrainer",

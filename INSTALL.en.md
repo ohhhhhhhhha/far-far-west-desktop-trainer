@@ -2,13 +2,13 @@
 
 ## Downloads and compatibility
 
-Windows x64; tested baseline Far Far West 0.3.0.7 and [UE4SS v3.0.1-1181-g83330635](https://github.com/UE4SS-RE/RE-UE4SS/releases/download/experimental/UE4SS_v3.0.1-1181-g83330635.zip). The framework is separate. Download **FFWTrainer-0.4.0-beta.4-installation-update.zip** from the [release page](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/tag/v0.4.0-beta.4); the source ZIP is not the install package. Exit the game completely before installing. Use normal Windows extraction and copying.
+Windows x64; tested baseline Far Far West 0.3.0.7 and [UE4SS v3.0.1-1181-g83330635](https://github.com/UE4SS-RE/RE-UE4SS/releases/download/experimental/UE4SS_v3.0.1-1181-g83330635.zip). The framework is separate. Download **FFWTrainer-0.4.0-beta.5.zip** from the [release page](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/tag/v0.4.0-beta.5); the source ZIP is not the install package. Exit the game completely before installing. Use normal Windows extraction and copying.
 
 ## 1. Locate the game
 
 In Steam, right-click Far Far West → Manage → Browse local files. This opens the **game root**. From there open FarFarWest → Binaries → Win64: this **executable folder** contains FarFarWest-Win64-Shipping.exe. These are two different destinations.
 
-## 2. Install and verify UE4SS
+## 2. Install UE4SS and the game signature before the first launch
 
 If the tested build is already working, keep it and proceed to step 3. Otherwise extract the official UE4SS ZIP into a separate temporary folder. Copy its **dwmapi.dll** and **ue4ss** folder directly into the executable folder. Verify:
 
@@ -21,7 +21,7 @@ If the tested build is already working, keep it and proceed to step 3. Otherwise
 
 The UE4SS ZIP includes default settings and a mod list. If an existing UE4SS or another proxy DLL is present, first back up the existing files and configuration outside the game directory. Do not blindly overwrite other mods, settings, mod lists or their proxy DLLs. The steps above describe a fresh install. Preserve other mods and use one compatible UE4SS installation; do not mix builds.
 
-For a fresh install, start the game once **before adding FFWTrainer**, then exit. Check that ue4ss/UE4SS.log was newly created or updated. The tested build may identify itself as v3.0.1 Beta #0; also check Git SHA 83330635. If the game already crashes or there is no fresh log, resolve the UE4SS setup before adding the trainer. Game updates and other mods can affect compatibility.
+Before the first launch, extract the trainer runtime ZIP and copy its GameRoot/FarFarWest/Binaries/Win64/ue4ss/UE4SS_Signatures/ProcessLocalScriptFunction.lua to the same relative UE4SS_Signatures folder in the executable directory. Then test the official loader **with this game signature** before enabling FFWTrainer. Do not test the bare official loader first: its generic scan can select the wrong entry for this game. See the included UE4SS-COMPATIBILITY.en.md. Check that ue4ss/UE4SS.log was newly created or updated. The tested build may identify itself as v3.0.1 Beta #0; also check Git SHA 83330635. If the game already crashes or there is no fresh log, resolve the UE4SS setup before adding the trainer. Game updates and other mods can affect compatibility.
 
 ## 3. Install the trainer
 
@@ -47,3 +47,7 @@ Before updating, back up FFWTrainer outside Mods. Merge the new runtime package 
 If startup crashes after adding the trainer, exit, temporarily move its enabled.txt out of the mod folder and, if FFWTrainer also appears in Mods/mods.txt, set that entry to 0. Restart to compare; restore the marker to re-enable. This does not delete your save. If it also crashes with the trainer disabled, investigate UE4SS, the game and other mods separately. Otherwise report game version, exact UE4SS build, trainer version and last steps. Remove personal paths and account identifiers from logs; do not upload saves or credentials.
 
 [UE4SS official installation guide](https://docs.ue4ss.com/installation-guide) · [Lua mod layout](https://docs.ue4ss.com/guides/creating-a-lua-mod.html)
+
+## Windows path encoding
+
+The package was extracted with Node into paths containing spaces and Chinese characters, and its Lua loader was exercised in a virtual filesystem. This does not verify narrow fopen on every Windows system code page. If UE4SS cannot open Lua files under a non-ASCII game path, use Steam's storage UI to move the game to an ASCII-only library path and retest. Do not change the system locale or call os.setlocale as a mod workaround.

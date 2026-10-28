@@ -1,8 +1,8 @@
 # Far Far West — In-game Trainer
 
-[简体中文](README.zh-CN.md) · [Download](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/tag/v0.4.0-beta.4) · [Report an issue](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/issues)
+[简体中文](README.zh-CN.md) · [Download](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/tag/v0.4.0-beta.5) · [Report an issue](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/issues)
 
-**FFWTrainer · 0.4.0-beta.4 · UE4SS · Windows x64**
+**FFWTrainer · 0.4.0-beta.5 · UE4SS · Windows x64**
 
 Press **F2** to open the trainer inside the game. The panel uses the game font, a dark background and brass accents, with mouse selection, paging, input and scrollable details. Display language follows the game; search accepts Chinese and English in either language.
 
@@ -13,10 +13,13 @@ Press **F2** to open the trainer inside the game. The panel uses the game font, 
 
 ## Installation
 
+Install the official UE4SS build and the included game-specific ProcessLocalScriptFunction signature before the first launch; follow INSTALL.en.md. The package does not overwrite the official DLL, configuration or mod list.
+
+
 Requires the verified [UE4SS v3.0.1-1181-g83330635 package](https://github.com/UE4SS-RE/RE-UE4SS/releases/download/experimental/UE4SS_v3.0.1-1181-g83330635.zip). Baseline: Far Far West 0.3.0.7 / UE4SS build 1181.
 
 1. First install and verify UE4SS using the [complete installation guide](INSTALL.en.md).
-2. Close the game and download [FFWTrainer-0.4.0-beta.4-installation-update.zip](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/download/v0.4.0-beta.4/FFWTrainer-0.4.0-beta.4-installation-update.zip).
+2. Close the game and download [FFWTrainer-0.4.0-beta.5.zip](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/download/v0.4.0-beta.5/FFWTrainer-0.4.0-beta.5.zip).
 3. Extract the ZIP outside the game folder.
 4. Copy the contents of GameRoot into the game directory opened through Steam → Manage → Browse local files.
 5. Start the game and press F2.
@@ -46,7 +49,9 @@ Lua source is under FFWTools/src/FFWTrainer/Scripts, including the dependencies 
 
 Existing progression saving, magic-school levels and native-menu budget unlocking were previously user-confirmed. The previous build passed all 31 offline Lua test files. On 2026-10-28, the user confirmed F2/F4 mouse navigation, paging, a short F3 input burst producing one pickup, pickup interaction, and trainer use after returning to the saloon.
 
-## 0.4.0-beta.4 candidate
+## 0.4.0-beta.5 candidate
+
+This candidate addresses stale UMG cleanup and discards old views after world changes. Stopped callbacks and old edit-box reads are rejected. Upgrade menu records are scoped to the current local saloon context. Multiplayer roles, installation paths and DPI are simulated in tests; live multiplayer acceptance and native crash attribution remain pending.
 
 In Settings, choose **Drop on ground** (default) or **Gain directly**. The choice is saved. F3 and the existing Joker action button use that mode; no additional key is assigned. Direct mode follows the native acquisition event, including normal card effects and conditional triggers.
 
@@ -59,3 +64,9 @@ The user confirmed the initial beta.4 startup, mouse navigation and both Joker m
 ## Support and license
 
 In [Issues](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/issues), include the mod/game/UE4SS versions and reproduction steps. Omit saves, account identifiers and personal paths. Maintained by FFWTools contributors. Original code/documentation use the [MIT license](LICENSE); [game-derived text and dependency notices](THIRD-PARTY-NOTICES.md) retain their respective rights.
+
+## Windows path encoding
+
+The package was extracted with Node into paths containing spaces and Chinese characters, and its Lua loader was exercised in a virtual filesystem. This does not verify narrow fopen on every Windows system code page. If UE4SS cannot open Lua files under a non-ASCII game path, use Steam's storage UI to move the game to an ASCII-only library path and retest. Do not change the system locale or call os.setlocale as a mod workaround.
+
+Cold first-open handling now loads the game host and Font_Text assets before native widget creation; the library CDO is validated. Buttons use the native TextOverflowPolicy setter with Ellipsis. These cases passed with a freshly mounted shared engine fixture.

@@ -2,13 +2,13 @@
 
 ## 下载与适用版本
 
-Windows x64；已验证基线为 Far Far West 0.3.0.7 与 [UE4SS v3.0.1-1181-g83330635 官方下载](https://github.com/UE4SS-RE/RE-UE4SS/releases/download/experimental/UE4SS_v3.0.1-1181-g83330635.zip)。框架需另外下载。在[发布页](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/tag/v0.4.0-beta.4)下载 **FFWTrainer-0.4.0-beta.4-installation-update.zip** 运行包，source 源码包不能直接用作安装包。安装前完全退出游戏；使用 Windows 普通解压和复制即可。
+Windows x64；已验证基线为 Far Far West 0.3.0.7 与 [UE4SS v3.0.1-1181-g83330635 官方下载](https://github.com/UE4SS-RE/RE-UE4SS/releases/download/experimental/UE4SS_v3.0.1-1181-g83330635.zip)。框架需另外下载。在[发布页](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/releases/tag/v0.4.0-beta.5)下载 **FFWTrainer-0.4.0-beta.5.zip** 运行包，source 源码包不能直接用作安装包。安装前完全退出游戏；使用 Windows 普通解压和复制即可。
 
 ## 1. 找到游戏目录
 
 在 Steam 右键 Far Far West → 管理 → 浏览本地文件，打开的是**游戏根目录**。从这里依次打开 FarFarWest → Binaries → Win64，进入**游戏程序目录**，里面有 FarFarWest-Win64-Shipping.exe。下面两步使用的是两个不同目录。
 
-## 2. 先安装并验证 UE4SS
+## 2. 首次启动前先装官方 UE4SS 和游戏签名
 
 如果已安装且正常使用上述测试构建，可保留现有安装并跳到第 3 步。否则将官方 UE4SS ZIP 解压到单独的临时文件夹，把里面的 **dwmapi.dll** 和 **ue4ss** 文件夹直接复制到游戏程序目录。核对结果：
 
@@ -21,7 +21,7 @@ Windows x64；已验证基线为 Far Far West 0.3.0.7 与 [UE4SS v3.0.1-1181-g83
 
 UE4SS ZIP 带默认设置和 Mod 列表。如果已有 UE4SS 或其他代理 DLL，先把现有文件和配置备份到游戏目录之外；不要直接覆盖其他 Mod、设置、Mod 列表或代理 DLL。上述步骤适用于首次安装；调整已有环境时应保留其他 Mod，使用一套兼容的 UE4SS，不要混用不同构建的文件。
 
-首次安装时，**先不安装 FFWTrainer**，启动游戏一次后退出，检查 ue4ss/UE4SS.log 是否新建或更新时间已变化。此构建的日志可能显示 v3.0.1 Beta #0，还应核对 Git SHA 83330635。如果此时已崩溃或没有新日志，应先排查 UE4SS 安装再继续。游戏更新或其他 Mod 也可能影响兼容性。
+首次启动前，从修改器运行 ZIP 复制 GameRoot/FarFarWest/Binaries/Win64/ue4ss/UE4SS_Signatures/ProcessLocalScriptFunction.lua 到游戏程序目录中同一相对位置。先验证“官方加载器＋这份游戏签名”，再启用 FFWTrainer；不要先启动缺少签名的裸框架，其通用扫描可能选错当前游戏的函数入口。详见包内 UE4SS-COMPATIBILITY.zh-CN.md。之后检查 ue4ss/UE4SS.log 是否新建或更新时间已变化。此构建的日志可能显示 v3.0.1 Beta #0，还应核对 Git SHA 83330635。如果此时已崩溃或没有新日志，应先排查 UE4SS 安装再继续。游戏更新或其他 Mod 也可能影响兼容性。
 
 ## 3. 安装修改器
 
@@ -47,3 +47,7 @@ UE4SS ZIP 带默认设置和 Mod 列表。如果已有 UE4SS 或其他代理 DLL
 如果添加修改器后启动崩溃，退出后暂时移走其 enabled.txt；若 Mods/mods.txt 还有 FFWTrainer 条目，也将其设为 0。重启比较结果，重新启用时恢复标记，不会删除存档。如果禁用后仍崩溃，分别排查 UE4SS、游戏及其他 Mod；否则反馈游戏版本、UE4SS 精确构建号、修改器版本和最后操作。提供日志前去掉个人路径和账号标识，不要上传存档或凭据。
 
 [UE4SS 官方安装文档](https://docs.ue4ss.com/installation-guide) · [Lua Mod 目录规范](https://docs.ue4ss.com/guides/creating-a-lua-mod.html)
+
+## Windows 路径编码范围
+
+已用 Node 在含空格、中文的目录实际解包，并在虚拟文件系统中验证 Lua 加载；这不等于已验证所有 Windows 系统代码页下的 narrow fopen。如果 UE4SS 无法打开非 ASCII 路径中的 Lua 文件，请通过 Steam 的存储管理界面将游戏移动到纯 ASCII 库路径后重试，不要修改系统区域设置或用 os.setlocale 全局绕过。
