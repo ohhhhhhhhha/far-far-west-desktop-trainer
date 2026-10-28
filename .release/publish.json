@@ -1,0 +1,36 @@
+{
+  "tag": "v0.4.0-beta.5",
+  "targetCommit": "2283431af05154385731db6cd450249b106adfed",
+  "title": "In-game Trainer 0.4.0-beta.5 / 清理与启动兼容",
+  "body": "## 0.4.0-beta.5 (prerelease)\n\nRepairs stale UMG cleanup, released-route/queued callbacks, and input-lock recovery after controller/world changes. Host/font assets are loaded before native widget creation; upgrade-menu records stay within the current local saloon context. Halloween resources, both Joker modes, cooldown and pickup-pile protection are retained.\n\n**Install before the first launch:** install [official UE4SS v3.0.1-1181-g83330635](https://github.com/UE4SS-RE/RE-UE4SS/releases/download/experimental/UE4SS_v3.0.1-1181-g83330635.zip), then merge this runtime ZIP's **GameRoot contents** into the Steam game root. This installs the game-specific override at **FarFarWest/Binaries/Win64/ue4ss/UE4SS_Signatures/ProcessLocalScriptFunction.lua**. The framework and signature must both be in place before starting the game. Keep existing settings, mod lists and player Data; the mod archive does not replace framework DLLs/configuration. Back up an existing same-name signature before updating. Other installed components may share that signature.\n\nTested baseline: Far Far West 0.3.0.7 / CL 2852 / UE 5.8.1, Windows x64. The signature and license are included. [English install guide](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/blob/main/INSTALL.en.md) · [中文安装指南](https://github.com/ohhhhhhhhha/far-far-west-desktop-trainer/blob/main/INSTALL.zh-CN.md).\n\n**Verification:** 40/40 offline Lua scripts passed, including synthetic host/client roles, travel, DPI and path scenarios. Real archive extraction was checked in space/Chinese paths. Virtual-filesystem Lua tests do not certify every Windows code page. Real multiplayer acceptance remains pending. B07/B08 native reflection/access-violation crashes remain unresolved because the original dumps/complete Lua stacks were unavailable; Lua cleanup guards do not prove those native crashes fixed.\n\n修复旧 UMG 清理中断、已释放路由/过期排队回调、换世界后的输入锁归还，并补齐宿主/字体冷加载与当前酒馆菜单记录隔离。保留活动资源、地面/直接获得两模式及刷卡保护。\n\n**首次启动前先装齐框架与游戏签名。** 安装上方官方 UE4SS，再把运行包 GameRoot 内部内容合并到 Steam 游戏根目录。签名路径为 **FarFarWest/Binaries/Win64/ue4ss/UE4SS_Signatures/ProcessLocalScriptFunction.lua**，已随包提供。保留既有配置、Mod 列表和玩家 Data；更新前备份同名签名，卸载一个组件时不要删除其他组件仍需的共享签名。\n\n40/40 离线脚本通过，主客机、切图和 DPI 为合成边界模拟；中文目录实际解包与 Lua 虚拟文件系统验证不能替代所有 Windows 代码页实机验收。真实联机仍待验收；B07/B08 缺少原始转储，未宣称闭环。附件不含玩家数据、日志、个人路径或凭据。\n",
+  "assets": [
+    {
+      "name": "FFWTrainer-0.4.0-beta.5.zip",
+      "bytes": 175267,
+      "sha256": "8975c7e34ef92d0fec20f86b2bbc78de03a5fe007eecb81d2613aeb0f23af7d4",
+      "contentType": "application/zip",
+      "blob": "f52709901b24df577888fcc0308a0da113125676"
+    },
+    {
+      "name": "FFWTrainer-source-0.4.0-beta.5.zip",
+      "bytes": 260093,
+      "sha256": "3df0b18c6f08865645e3ad3337b76d4ec02bd0e4ec033886d8dc4b6b8e27211c",
+      "contentType": "application/zip",
+      "blob": "ca07a3da15950d48efdddf30be100e398d828265"
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "bytes": 195,
+      "sha256": "fd0928f17807ebb5740e2c0489235e697a66631fae38d42b757f6695bb9be723",
+      "contentType": "text/plain",
+      "blob": "eb8cabd8f6047f471896aa316d3646a1d6d6019c"
+    },
+    {
+      "name": "release-manifest.json",
+      "bytes": 516,
+      "sha256": "6148f3e20e18e678914a1c388568c9e1e01dc8bc3290aae04b4f4ad6b4242eea",
+      "contentType": "application/json",
+      "blob": "d6deadd59731c4ae781a25eb63cf43baaadf4ba8"
+    }
+  ]
+}
